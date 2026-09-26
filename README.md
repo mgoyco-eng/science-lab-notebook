@@ -1,5 +1,5 @@
-# Science Lab Notebook — Version 6
+# Science Lab Notebook — Version 7
 
-This version builds on Version 5 and refines the title typography and student-facing section labels.
+Static GitHub Pages build of the Science Lab Notebook.
 
-Upload `index.html`, `styles.css`, and `app.js` to the root of the existing GitHub Pages repository.
+This version refines the page header and the Before You Begin instructions while preserving the report-writing, monitoring, preview, watermark, table, and PDF features from the previous version.
