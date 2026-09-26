@@ -54,6 +54,7 @@
     lastHeartbeat: Date.now(),
     focusModeActive: false,
     focusModeEverEntered: false,
+    focusGatePassed: false,
     wakeLock: null,
     controlledVariables: [
       { variable: "", control: "", effect: "" },
@@ -70,7 +71,6 @@
   };
 
   const els = {
-    screenWatermark: $("screenWatermark"),
     experimentTitle: $("experimentTitle"),
     teacher: $("teacher"),
     studentName: $("studentName"),
@@ -91,6 +91,9 @@
     monitoringBadge: $("monitoringBadge"),
     monitoringStatus: $("monitoringStatus"),
     focusModeButton: $("focusModeButton"),
+    focusControlCard: $("focusControlCard"),
+    focusControlMessage: $("focusControlMessage"),
+    focusControlBadge: $("focusControlBadge"),
     controlledVariablesEditor: $("controlledVariablesEditor"),
     rawDataEditor: $("rawDataEditor"),
     processedDataEditor: $("processedDataEditor"),
@@ -131,14 +134,14 @@
     attachMonitoring();
     document.querySelectorAll("textarea.auto-grow").forEach(autoGrow);
     updateCounts();
-    updateWatermark();
   }
 
   function makeTable() {
     return {
       title: "",
-      headers: ["Trial", "", "", ""],
-      rows: Array.from({ length: 4 }, () => ["", "", "", ""])
+      headers: ["", "", "", ""],
+      rows: Array.from({ length: 4 }, () => ["", "", "", ""]),
+      groupedHeading: null
     };
   }
 
@@ -156,8 +159,7 @@
     [els.experimentTitle, els.teacher, els.studentName, els.classCode].forEach((field) => {
       field.addEventListener("input", () => {
         markDirty();
-        updateWatermark();
-        tryUnlock();
+            tryUnlock();
       });
     });
 
@@ -275,16 +277,37 @@
 
     state.unlocked = true;
     state.monitoringStartedAt = new Date().toISOString();
-    els.reportFields.disabled = false;
-    els.previewReport.disabled = false;
-    els.downloadFinal.disabled = false;
+    els.reportFields.disabled = true;
+    els.previewReport.disabled = true;
+    els.downloadFinal.disabled = true;
     els.focusModeButton.disabled = false;
-    els.gateNotice.textContent = "Report unlocked. Keep this page open and download your PDF before leaving.";
+    els.gateNotice.textContent = "Student Information complete. Enter Focus Mode below before beginning your report.";
     els.gateNotice.classList.add("unlocked");
     els.monitoringBadge.textContent = "ACTIVE";
     els.monitoringBadge.className = "status-chip active";
-    els.monitoringStatus.textContent = "Monitoring is active. Enter Focus Mode when instructed by your teacher.";
-    updateWatermark();
+    els.monitoringStatus.textContent = "Monitoring is active. Enter Focus Mode above the report before you begin writing.";
+    els.focusControlCard.classList.add("ready");
+    els.focusControlBadge.textContent = "READY";
+    els.focusControlBadge.className = "status-chip warning";
+    els.focusControlMessage.textContent = "Student Information is complete. Enter Focus Mode now to unlock the report-writing sections.";
+  }
+
+  function activateReportAfterFocus(fallback = false) {
+    if (!state.unlocked || state.submitted || state.focusGatePassed) return;
+    state.focusGatePassed = true;
+    els.reportFields.disabled = false;
+    els.previewReport.disabled = false;
+    els.downloadFinal.disabled = false;
+    els.gateNotice.textContent = fallback
+      ? "Your browser did not allow full-screen Focus Mode, but monitoring remains active and the report is unlocked."
+      : "Focus Mode entered. Your report is unlocked. Keep this page open until your final PDF has downloaded.";
+    els.focusControlCard.classList.remove("ready");
+    els.focusControlCard.classList.add("active");
+    els.focusControlBadge.textContent = fallback ? "MONITORED" : "ACTIVE";
+    els.focusControlBadge.className = "status-chip active";
+    els.focusControlMessage.textContent = fallback
+      ? "Full-screen mode was not available in this browser. Assessment Monitoring is still active while you work."
+      : "Focus Mode is active. You may begin writing your report.";
   }
 
   function markDirty() {
@@ -433,13 +456,12 @@
       titleWrap.className = "table-title-wrap";
       const titleLabel = document.createElement("div");
       titleLabel.className = "row-label";
-      titleLabel.textContent = `Table ${tableIndex + 1} title (optional)`;
+      titleLabel.textContent = `Table ${tableIndex + 1} Title`;
       const titleInput = document.createElement("input");
       titleInput.type = "text";
       titleInput.maxLength = 140;
       titleInput.value = table.title;
       titleInput.disabled = state.submitted;
-      titleInput.placeholder = `Table ${tableIndex + 1}`;
       titleInput.addEventListener("input", () => {
         table.title = titleInput.value;
         markDirty();
@@ -452,7 +474,10 @@
         tableToolButton("+ Row", () => addTableRow(key, tableIndex), table.rows.length >= 40),
         tableToolButton("− Row", () => removeTableRow(key, tableIndex), table.rows.length <= 1),
         tableToolButton("+ Column", () => addTableColumn(key, tableIndex), table.headers.length >= 10),
-        tableToolButton("− Column", () => removeTableColumn(key, tableIndex), table.headers.length <= 2)
+        tableToolButton("− Column", () => removeTableColumn(key, tableIndex), table.headers.length <= 2),
+        table.groupedHeading
+          ? tableToolButton("Remove grouped heading", () => removeGroupedHeading(key, tableIndex), false)
+          : tableToolButton("+ Grouped heading", () => addGroupedHeading(key, tableIndex), table.headers.length < 2)
       );
       if (state.tables[key].length > 1) {
         const removeTable = tableToolButton("Remove table", () => {
@@ -465,11 +490,20 @@
 
       head.append(titleWrap, toolbar);
 
+      if (table.groupedHeading) {
+        card.append(makeGroupedHeadingControls(key, tableIndex, table));
+      }
+
       const scroll = document.createElement("div");
       scroll.className = "table-scroll";
       const tableEl = document.createElement("table");
       tableEl.className = "editable-table";
       const thead = document.createElement("thead");
+
+      if (table.groupedHeading) {
+        thead.append(makeEditableGroupedHeadingRow(key, tableIndex, table));
+      }
+
       const headerRow = document.createElement("tr");
       table.headers.forEach((headerValue, colIndex) => {
         const th = document.createElement("th");
@@ -477,7 +511,7 @@
         input.type = "text";
         input.value = headerValue;
         input.disabled = state.submitted;
-        input.placeholder = colIndex === 0 ? "Trial" : "Heading";
+        input.placeholder = "Heading";
         input.setAttribute("aria-label", `Table ${tableIndex + 1} column ${colIndex + 1} heading`);
         input.addEventListener("input", () => {
           table.headers[colIndex] = input.value;
@@ -512,10 +546,131 @@
       scroll.append(tableEl);
       const footnote = document.createElement("div");
       footnote.className = "table-footnote";
-      footnote.textContent = "Use Preview Report to check how this table will appear before downloading the PDF.";
-      card.append(head, scroll, footnote);
+      footnote.textContent = "Click any heading cell to enter or change its heading. Use Preview Report to check how this table will appear before downloading the PDF.";
+      card.prepend(head);
+      card.append(scroll, footnote);
       container.append(card);
     });
+  }
+
+  function addGroupedHeading(key, tableIndex) {
+    const table = state.tables[key][tableIndex];
+    if (!table || table.groupedHeading || table.headers.length < 2) return;
+    const span = Math.min(3, table.headers.length);
+    table.groupedHeading = {
+      label: "",
+      start: Math.max(0, table.headers.length - span),
+      span
+    };
+    renderTableEditor(key);
+    markDirty();
+  }
+
+  function removeGroupedHeading(key, tableIndex) {
+    const table = state.tables[key][tableIndex];
+    if (!table || !table.groupedHeading) return;
+    table.groupedHeading = null;
+    renderTableEditor(key);
+    markDirty();
+  }
+
+  function normalizeGroupedHeading(table) {
+    if (!table.groupedHeading) return;
+    const maxStart = Math.max(0, table.headers.length - 1);
+    table.groupedHeading.start = Math.min(Math.max(0, table.groupedHeading.start), maxStart);
+    const maxSpan = table.headers.length - table.groupedHeading.start;
+    table.groupedHeading.span = Math.min(Math.max(1, table.groupedHeading.span), maxSpan);
+  }
+
+  function makeGroupedHeadingControls(key, tableIndex, table) {
+    normalizeGroupedHeading(table);
+    const group = table.groupedHeading;
+    const wrap = document.createElement("div");
+    wrap.className = "grouped-heading-controls";
+
+    const note = document.createElement("p");
+    note.className = "grouped-heading-note";
+    note.textContent = "Grouped heading: use this when several adjacent columns belong under one shared label.";
+
+    const controls = document.createElement("div");
+    controls.className = "grouped-heading-options";
+
+    const startLabel = document.createElement("label");
+    startLabel.textContent = "Starts at column";
+    const startSelect = document.createElement("select");
+    startSelect.disabled = state.submitted;
+    table.headers.forEach((_, index) => {
+      const option = document.createElement("option");
+      option.value = String(index);
+      option.textContent = String(index + 1);
+      option.selected = index === group.start;
+      startSelect.append(option);
+    });
+    startSelect.addEventListener("change", () => {
+      group.start = Number(startSelect.value);
+      const maxSpan = table.headers.length - group.start;
+      group.span = Math.min(group.span, maxSpan);
+      renderTableEditor(key);
+      markDirty();
+    });
+    startLabel.append(startSelect);
+
+    const spanLabel = document.createElement("label");
+    spanLabel.textContent = "Number of columns";
+    const spanSelect = document.createElement("select");
+    spanSelect.disabled = state.submitted;
+    const maxSpan = table.headers.length - group.start;
+    for (let span = 1; span <= maxSpan; span += 1) {
+      const option = document.createElement("option");
+      option.value = String(span);
+      option.textContent = String(span);
+      option.selected = span === group.span;
+      spanSelect.append(option);
+    }
+    spanSelect.addEventListener("change", () => {
+      group.span = Number(spanSelect.value);
+      renderTableEditor(key);
+      markDirty();
+    });
+    spanLabel.append(spanSelect);
+
+    controls.append(startLabel, spanLabel);
+    wrap.append(note, controls);
+    return wrap;
+  }
+
+  function makeEditableGroupedHeadingRow(key, tableIndex, table) {
+    normalizeGroupedHeading(table);
+    const group = table.groupedHeading;
+    const row = document.createElement("tr");
+    row.className = "grouped-heading-row";
+
+    let col = 0;
+    while (col < table.headers.length) {
+      const th = document.createElement("th");
+      if (col === group.start) {
+        th.colSpan = group.span;
+        th.className = "grouped-heading-cell";
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = group.label;
+        input.disabled = state.submitted;
+        input.placeholder = "Grouped heading";
+        input.setAttribute("aria-label", `Table ${tableIndex + 1} grouped heading`);
+        input.addEventListener("input", () => {
+          group.label = input.value;
+          markDirty();
+        });
+        th.append(input);
+        col += group.span;
+      } else {
+        th.className = "grouped-heading-empty";
+        th.setAttribute("aria-hidden", "true");
+        col += 1;
+      }
+      row.append(th);
+    }
+    return row;
   }
 
   function tableToolButton(text, handler, disabled = false, danger = false) {
@@ -549,6 +704,7 @@
     if (!table || table.headers.length >= 10) return;
     table.headers.push("");
     table.rows.forEach((row) => row.push(""));
+    normalizeGroupedHeading(table);
     renderTableEditor(key);
     markDirty();
   }
@@ -558,6 +714,7 @@
     if (!table || table.headers.length <= 2) return;
     table.headers.pop();
     table.rows.forEach((row) => row.pop());
+    normalizeGroupedHeading(table);
     renderTableEditor(key);
     markDirty();
   }
@@ -742,7 +899,7 @@
   }
 
   function attachRestrictions() {
-    const blockedEvents = ["copy", "cut", "paste", "drop"];
+    const blockedEvents = ["copy", "cut", "paste", "dragstart", "drop"];
     blockedEvents.forEach((type) => {
       document.addEventListener(type, (event) => {
         if (state.submitted) return;
@@ -751,6 +908,7 @@
           copy: "Copy attempt",
           cut: "Cut attempt",
           paste: "Paste attempt",
+          dragstart: "Drag attempt",
           drop: "Drag-and-drop attempt"
         };
         recordBlocked(labels[type], "Copying, cutting, pasting, and drag-and-drop are disabled. Please type your own work directly in the Science Lab Notebook.");
@@ -895,6 +1053,7 @@
       }
     } catch (error) {
       els.monitoringStatus.textContent = "This browser did not allow full-screen Focus Mode. Monitoring remains active.";
+      activateReportAfterFocus(true);
     }
   }
 
@@ -904,8 +1063,14 @@
       state.focusModeEverEntered = true;
       els.focusModeButton.textContent = "Exit Focus Mode";
       els.monitoringBadge.textContent = "FOCUS MODE";
+      els.focusControlCard.classList.remove("ready");
+      els.focusControlCard.classList.add("active");
+      els.focusControlBadge.textContent = "ACTIVE";
+      els.focusControlBadge.className = "status-chip active";
+      els.focusControlMessage.textContent = "Focus Mode is active. You may continue working on your report.";
       els.monitoringBadge.className = "status-chip active";
       els.monitoringStatus.textContent = "Focus Mode is active. Screen wake lock will be requested when supported.";
+      activateReportAfterFocus(false);
       requestWakeLock();
       return;
     }
@@ -913,6 +1078,13 @@
     if (!state.focusModeActive) return;
     state.focusModeActive = false;
     els.focusModeButton.textContent = "Enter Focus Mode";
+    if (state.focusGatePassed && !state.submitted) {
+      els.focusControlCard.classList.remove("active");
+      els.focusControlCard.classList.add("ready");
+      els.focusControlBadge.textContent = "FOCUS EXITED";
+      els.focusControlBadge.className = "status-chip warning";
+      els.focusControlMessage.textContent = "Focus Mode was exited. Re-enter Focus Mode to return to the monitored full-screen view.";
+    }
     releaseWakeLock();
     if (!state.unlocked || state.submitted) return;
 
@@ -958,15 +1130,14 @@
     els.inactiveCount.textContent = String(state.inactiveCount);
   }
 
-  function updateWatermark() {
-    const text = `${els.studentName.value.trim() || "STUDENT"} • ${els.classCode.value.trim() || "CLASS CODE"} • ${els.date.value}`;
-    els.screenWatermark.replaceChildren();
-    for (let i = 0; i < 36; i += 1) {
-      const span = document.createElement("span");
-      span.textContent = text;
-      els.screenWatermark.append(span);
-    }
-    els.screenWatermark.classList.toggle("visible", state.unlocked);
+  function getWatermarkDate() {
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric", month: "2-digit", day: "2-digit"
+    }).format(startedAt);
+  }
+
+  function getWatermarkText() {
+    return `${els.studentName.value.trim() || "Student"} • ${getWatermarkDate()}`;
   }
 
   function openPreview() {
@@ -979,7 +1150,7 @@
   function buildPreview() {
     const root = els.reportPreview;
     root.replaceChildren();
-    root.dataset.watermark = `${els.studentName.value.trim()} • ${els.classCode.value.trim()}`;
+    root.dataset.watermark = getWatermarkText();
 
     const titleBlock = document.createElement("div");
     titleBlock.className = "preview-report-title";
@@ -1142,27 +1313,57 @@
   }
 
   function appendPreviewTables(section, tables) {
-    tables.forEach((table, index) => {
-      const title = document.createElement("p");
-      title.className = "preview-table-title";
-      title.textContent = table.title.trim() || `Table ${index + 1}`;
-      section.append(title, makePreviewTable(table.headers, table.rows));
+    tables.forEach((table) => {
+      if (table.title.trim()) {
+        const title = document.createElement("p");
+        title.className = "preview-table-title";
+        title.textContent = table.title.trim();
+        section.append(title);
+      }
+      section.append(makePreviewTable(table));
     });
   }
 
-  function makePreviewTable(headers, rows) {
+  function makePreviewTable(tableData, legacyRows = null) {
+    if (Array.isArray(tableData)) {
+      tableData = { headers: tableData, rows: legacyRows || [], groupedHeading: null };
+    }
     const table = document.createElement("table");
     table.className = "preview-table";
     const thead = document.createElement("thead");
+
+    if (tableData.groupedHeading) {
+      normalizeGroupedHeading(tableData);
+      const group = tableData.groupedHeading;
+      const groupedRow = document.createElement("tr");
+      groupedRow.className = "preview-grouped-heading-row";
+      let col = 0;
+      while (col < tableData.headers.length) {
+        const th = document.createElement("th");
+        if (col === group.start) {
+          th.colSpan = group.span;
+          th.textContent = group.label.trim() || " ";
+          th.className = "preview-grouped-heading-cell";
+          col += group.span;
+        } else {
+          th.textContent = " ";
+          th.className = "preview-grouped-heading-empty";
+          col += 1;
+        }
+        groupedRow.append(th);
+      }
+      thead.append(groupedRow);
+    }
+
     const trh = document.createElement("tr");
-    headers.forEach((header) => {
+    tableData.headers.forEach((header) => {
       const th = document.createElement("th");
       th.textContent = header || " ";
       trh.append(th);
     });
     thead.append(trh);
     const tbody = document.createElement("tbody");
-    rows.forEach((row) => {
+    tableData.rows.forEach((row) => {
       const tr = document.createElement("tr");
       row.forEach((cell) => {
         const td = document.createElement("td");
@@ -1290,12 +1491,20 @@
       }
 
       const pages = doc.getNumberOfPages();
+      const watermarkText = getWatermarkText();
       for (let p = 1; p <= pages; p += 1) {
         doc.setPage(p);
+
+        // Student-specific watermark: visible only in preview and final PDF.
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(25);
+        doc.setTextColor(225, 231, 238);
+        doc.text(watermarkText, pageWidth / 2, pageHeight / 2, { align: "center", angle: -28 });
+
         doc.setFont("helvetica", "normal");
         doc.setFontSize(7.5);
         doc.setTextColor(120, 132, 146);
-        doc.text(`${els.studentName.value.trim() || "Student"} • ${els.classCode.value.trim() || "Class"}`, margin, pageHeight - 24);
+        doc.text(watermarkText, margin, pageHeight - 24);
         doc.text(`Page ${p} of ${pages}`, pageWidth - margin, pageHeight - 24, { align: "right" });
       }
 
@@ -1413,20 +1622,44 @@
   }
 
   function addPdfTables(doc, tables, y, margin, usableWidth, pageHeight) {
-    tables.forEach((table, index) => {
-      y = ensurePdfSpace(doc, y, 52, pageHeight, margin);
-      doc.setTextColor(...COLORS.ink);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(9.2);
-      doc.text(table.title.trim() || `Table ${index + 1}`, margin, y);
-      y += 7;
+    tables.forEach((table) => {
+      y = ensurePdfSpace(doc, y, table.title.trim() ? 52 : 43, pageHeight, margin);
+      if (table.title.trim()) {
+        doc.setTextColor(...COLORS.ink);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(9.2);
+        doc.text(table.title.trim(), margin, y);
+        y += 7;
+      }
       const colCount = table.headers.length;
       const fontSize = Math.max(6.2, 8.4 - Math.max(0, colCount - 5) * 0.45);
+      const headRows = [];
+      if (table.groupedHeading) {
+        normalizeGroupedHeading(table);
+        const group = table.groupedHeading;
+        const groupedRow = [];
+        let col = 0;
+        while (col < table.headers.length) {
+          if (col === group.start) {
+            groupedRow.push({
+              content: group.label.trim() || " ",
+              colSpan: group.span,
+              styles: { halign: "center", fontStyle: "bold" }
+            });
+            col += group.span;
+          } else {
+            groupedRow.push(" ");
+            col += 1;
+          }
+        }
+        headRows.push(groupedRow);
+      }
+      headRows.push(table.headers.map((header) => header || " "));
       doc.autoTable({
         startY: y,
         theme: "grid",
         margin: { left: margin, right: margin },
-        head: [table.headers.map((header) => header || " ")],
+        head: headRows,
         body: table.rows.map((row) => row.map((cell) => cell || " ")),
         styles: { font: "helvetica", fontSize, cellPadding: 3.2, lineColor: [135, 155, 175], lineWidth: 0.45, textColor: COLORS.ink, overflow: "linebreak", valign: "middle" },
         headStyles: { fillColor: [234, 247, 250], textColor: COLORS.navy, fontStyle: "bold", halign: "center" },
@@ -1552,6 +1785,5 @@
     renderCalculationImage();
     renderFigures();
     renderReferences();
-    updateWatermark();
   }
 })();
