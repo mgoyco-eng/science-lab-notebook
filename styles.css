@@ -50,30 +50,29 @@ button:disabled { cursor: not-allowed; opacity: .52; }
 }
 
 .site-header {
-  background: #fff;
-  border: 1.5px solid var(--navy);
-  border-radius: 18px;
-  padding: 28px 34px 24px;
-  box-shadow: var(--shadow);
-  margin-bottom: 20px;
-  overflow: hidden;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 16px 24px 26px;
+  box-shadow: none;
+  margin-bottom: 12px;
+  overflow: visible;
   position: relative;
+  text-align: center;
 }
 
 .site-header::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0 0;
-  height: 5px;
-  background: linear-gradient(90deg, var(--navy) 0 22%, var(--teal) 22% 56%, var(--blue) 56% 80%, var(--orange) 80% 100%);
+  content: none;
 }
 
 .title-lockup {
   display: flex;
   align-items: baseline;
-  gap: 15px;
+  justify-content: center;
+  gap: 16px;
   flex-wrap: wrap;
   color: var(--navy);
+  text-align: center;
 }
 
 .title-science {
@@ -85,16 +84,16 @@ button:disabled { cursor: not-allowed; opacity: .52; }
 }
 
 .title-script {
-  font-family: "Caveat", "Segoe Print", "Bradley Hand", cursive;
-  font-weight: 700;
-  font-size: clamp(2.6rem, 5vw, 4.9rem);
-  line-height: .9;
+  font-family: "Allura", "Snell Roundhand", "Segoe Script", "Apple Chancery", cursive;
+  font-weight: 400;
+  font-size: clamp(3.25rem, 6vw, 5.65rem);
+  line-height: .82;
   transform: rotate(-1deg);
 }
 
 .title-banner {
   display: inline-block;
-  margin-top: 17px;
+  margin: 18px auto 0;
   padding: 7px 18px 8px;
   border-radius: 999px;
   background: var(--teal);
@@ -106,9 +105,11 @@ button:disabled { cursor: not-allowed; opacity: .52; }
 }
 
 .site-subtitle {
-  margin: 13px 0 0;
+  margin: 13px auto 0;
   color: var(--muted);
   font-weight: 600;
+  text-align: center;
+  max-width: 760px;
 }
 
 .card {
@@ -445,7 +446,7 @@ kbd {
 .controlled-editor { display: grid; gap: 10px; margin-top: 12px; }
 .controlled-row {
   display: grid;
-  grid-template-columns: 1fr 1.25fr 1.25fr auto;
+  grid-template-columns: minmax(150px, .9fr) minmax(220px, 1.6fr) auto;
   gap: 9px;
   align-items: start;
   padding: 11px;
@@ -687,17 +688,23 @@ kbd {
   color: #202d3c;
   overflow: hidden;
 }
-.preview-page::after {
-  content: attr(data-watermark);
+.preview-watermark-layer {
   position: absolute;
-  inset: 45% auto auto 12%;
-  transform: rotate(-25deg);
-  color: rgba(11,43,91,.045);
-  font-size: 2rem;
-  font-weight: 900;
-  letter-spacing: .04em;
-  white-space: nowrap;
+  inset: 0;
+  z-index: 4;
   pointer-events: none;
+  overflow: hidden;
+}
+.preview-watermark-item {
+  position: absolute;
+  transform: translate(-50%, -50%) rotate(-28deg);
+  color: rgba(11, 43, 91, .07);
+  font-family: "Oswald", "Arial Narrow", sans-serif;
+  font-size: 1.08rem;
+  font-weight: 700;
+  letter-spacing: .035em;
+  white-space: nowrap;
+  user-select: none;
 }
 .preview-report-title {
   border-bottom: 4px solid var(--teal);
@@ -782,7 +789,8 @@ kbd {
 
 @media (max-width: 680px) {
   .page-shell { width: min(100% - 16px, 1480px); padding-top: 8px; }
-  .site-header, .card { border-radius: 14px; padding: 18px; }
+  .site-header { padding: 12px 12px 20px; }
+  .card { border-radius: 14px; padding: 18px; }
   .title-lockup { gap: 7px; }
   .title-banner { font-size: .68rem; letter-spacing: .06em; }
   .student-grid, .sidebar { grid-template-columns: 1fr; }

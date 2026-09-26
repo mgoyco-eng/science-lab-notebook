@@ -20,6 +20,23 @@
 
   const SECTION_LABEL = Object.fromEntries(SECTION_ORDER);
 
+  function toRoman(value) {
+    const map = [
+      [1000, "M"], [900, "CM"], [500, "D"], [400, "CD"],
+      [100, "C"], [90, "XC"], [50, "L"], [40, "XL"],
+      [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]
+    ];
+    let number = Math.max(1, Number(value) || 1);
+    let result = "";
+    for (const [amount, numeral] of map) {
+      while (number >= amount) {
+        result += numeral;
+        number -= amount;
+      }
+    }
+    return result;
+  }
+
   const COLORS = {
     navy: [11, 43, 91],
     teal: [15, 138, 161],
@@ -327,7 +344,7 @@
       const li = document.createElement("li");
       const number = document.createElement("span");
       number.className = "outline-number";
-      number.textContent = `${index + 1}.`;
+      number.textContent = `${toRoman(index + 1)}.`;
       const text = document.createElement("span");
       text.textContent = label;
       li.append(number, text);
@@ -340,7 +357,7 @@
       if (!section.hidden) {
         const index = active.findIndex(([activeKey]) => activeKey === key);
         const badge = section.querySelector("[data-part-number]");
-        if (badge) badge.textContent = String(index + 1);
+        if (badge) badge.textContent = toRoman(index + 1);
       }
     });
 
@@ -386,16 +403,12 @@
       const row = document.createElement("div");
       row.className = "controlled-row";
 
-      const variableWrap = labeledDynamicField("Variable", "textarea", item.variable, (value) => {
+      const variableWrap = labeledDynamicField("Factor", "textarea", item.variable, (value) => {
         item.variable = value;
         markDirty();
       });
-      const controlWrap = labeledDynamicField("How it will be kept constant", "textarea", item.control, (value) => {
+      const controlWrap = labeledDynamicField("Details", "textarea", item.control, (value) => {
         item.control = value;
-        markDirty();
-      });
-      const effectWrap = labeledDynamicField("Effect if it is not controlled", "textarea", item.effect, (value) => {
-        item.effect = value;
         markDirty();
       });
 
@@ -412,7 +425,7 @@
         markDirty();
       });
 
-      row.append(variableWrap, controlWrap, effectWrap, remove);
+      row.append(variableWrap, controlWrap, remove);
       els.controlledVariablesEditor.append(row);
     });
 
@@ -1150,7 +1163,7 @@
   function buildPreview() {
     const root = els.reportPreview;
     root.replaceChildren();
-    root.dataset.watermark = getWatermarkText();
+    delete root.dataset.watermark;
 
     const titleBlock = document.createElement("div");
     titleBlock.className = "preview-report-title";
@@ -1185,13 +1198,34 @@
       const section = document.createElement("section");
       section.className = "preview-section";
       const heading = document.createElement("h2");
-      heading.textContent = `${index + 1}. ${label}`;
+      heading.textContent = `${toRoman(index + 1)}. ${label}`;
       section.append(heading);
       appendPreviewSectionContent(section, key);
       root.append(section);
     });
 
     root.append(buildPreviewMonitoring());
+    appendPreviewWatermarks(root);
+  }
+
+  function appendPreviewWatermarks(root) {
+    const layer = document.createElement("div");
+    layer.className = "preview-watermark-layer";
+    layer.setAttribute("aria-hidden", "true");
+    const text = getWatermarkText();
+    const rows = 8;
+    const columns = 3;
+    for (let row = 0; row < rows; row += 1) {
+      for (let column = 0; column < columns; column += 1) {
+        const mark = document.createElement("span");
+        mark.className = "preview-watermark-item";
+        mark.textContent = text;
+        mark.style.top = `${7 + row * 13}%`;
+        mark.style.left = `${18 + column * 33 + (row % 2 ? 7 : 0)}%`;
+        layer.append(mark);
+      }
+    }
+    root.append(layer);
   }
 
   function appendPreviewSectionContent(section, key) {
@@ -1212,15 +1246,15 @@
     if (key === "variables") {
       appendPreviewLabeledText(section, "Independent Variable", $("independentVariable").value);
       appendPreviewLabeledText(section, "Dependent Variable", $("dependentVariable").value);
-      const rows = state.controlledVariables.filter((row) => row.variable.trim() || row.control.trim() || row.effect.trim());
+      const rows = state.controlledVariables.filter((row) => row.variable.trim() || row.control.trim());
       const title = document.createElement("p");
       title.className = "preview-table-title";
       title.textContent = "Controlled Variables";
       section.append(title);
       if (rows.length) {
         section.append(makePreviewTable(
-          ["Controlled Variable", "How It Will Be Kept Constant", "Effect If Not Controlled"],
-          rows.map((row) => [row.variable, row.control, row.effect])
+          ["Factor", "Details"],
+          rows.map((row) => [row.variable, row.control])
         ));
       } else {
         appendPreviewEmpty(section, "No controlled variables entered.");
@@ -1495,11 +1529,19 @@
       for (let p = 1; p <= pages; p += 1) {
         doc.setPage(p);
 
-        // Student-specific watermark: visible only in preview and final PDF.
+        // Student-specific watermark: repeated across every preview/PDF page as a sharing deterrent.
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(25);
-        doc.setTextColor(225, 231, 238);
-        doc.text(watermarkText, pageWidth / 2, pageHeight / 2, { align: "center", angle: -28 });
+        doc.setFontSize(12.5);
+        doc.setTextColor(230, 234, 240);
+        const watermarkXs = [95, pageWidth / 2, pageWidth - 95];
+        const watermarkYs = [125, 265, 405, 545, 685];
+        watermarkYs.forEach((watermarkY, rowIndex) => {
+          watermarkXs.forEach((watermarkX, columnIndex) => {
+            const stagger = rowIndex % 2 ? 28 : 0;
+            const x = Math.min(pageWidth - 68, watermarkX + (columnIndex === 0 ? stagger : columnIndex === 2 ? -stagger : 0));
+            doc.text(watermarkText, x, watermarkY, { align: "center", angle: -28 });
+          });
+        });
 
         doc.setFont("helvetica", "normal");
         doc.setFontSize(7.5);
@@ -1526,7 +1568,7 @@
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(9);
-    doc.text(String(number), margin + 11, y + 5, { align: "center" });
+    doc.text(toRoman(number), margin + 11, y + 5, { align: "center" });
     doc.setTextColor(...COLORS.navy);
     doc.setFontSize(12);
     doc.text(label, margin + 29, y + 6);
@@ -1557,14 +1599,14 @@
       y = addPdfParagraph(doc, $("dependentVariable").value || "No response entered.", y, margin, usableWidth, pageHeight);
       y += 8;
       y = addPdfSubheading(doc, "Controlled Variables", y, margin);
-      const rows = state.controlledVariables.filter((row) => row.variable.trim() || row.control.trim() || row.effect.trim());
+      const rows = state.controlledVariables.filter((row) => row.variable.trim() || row.control.trim());
       if (!rows.length) return addPdfParagraph(doc, "No controlled variables entered.", y, margin, usableWidth, pageHeight, 9, COLORS.muted);
       doc.autoTable({
         startY: y,
         theme: "grid",
         margin: { left: margin, right: margin },
-        head: [["Controlled Variable", "How It Will Be Kept Constant", "Effect If Not Controlled"]],
-        body: rows.map((row) => [row.variable, row.control, row.effect]),
+        head: [["Factor", "Details"]],
+        body: rows.map((row) => [row.variable, row.control]),
         styles: { font: "helvetica", fontSize: 8, cellPadding: 4, lineColor: COLORS.line, lineWidth: 0.45, textColor: COLORS.ink, overflow: "linebreak" },
         headStyles: { fillColor: [234, 247, 250], textColor: COLORS.navy, fontStyle: "bold" }
       });
