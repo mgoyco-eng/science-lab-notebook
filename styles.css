@@ -84,10 +84,10 @@ button:disabled { cursor: not-allowed; opacity: .52; }
 }
 
 .title-script {
-  font-family: "Allura", "Snell Roundhand", "Segoe Script", "Apple Chancery", cursive;
+  font-family: "Kaushan Script", "Brush Script MT", "Segoe Script", cursive;
   font-weight: 400;
-  font-size: clamp(3.25rem, 6vw, 5.65rem);
-  line-height: .82;
+  font-size: clamp(2.85rem, 5.4vw, 5.1rem);
+  line-height: .9;
   transform: rotate(-1deg);
 }
 

@@ -12,10 +12,10 @@
     ["procedure", "Procedure"],
     ["rawData", "Raw Data"],
     ["processedData", "Processed Data"],
-    ["conclusion", "Conclusion (CER)"],
+    ["conclusion", "Conclusion"],
     ["evaluation", "Evaluation"],
     ["improvements", "Improvements"],
-    ["references", "References (APA 7)"]
+    ["references", "References"]
   ];
 
   const SECTION_LABEL = Object.fromEntries(SECTION_ORDER);
