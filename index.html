@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light" />
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <title>Science Lab Notebook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Oswald:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="screenWatermark" class="screen-watermark" aria-hidden="true"></div>
+
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="title-lockup" aria-label="Science Lab Notebook">
+        <span class="title-science">SCIENCE</span>
+        <span class="title-script">Lab Notebook</span>
+      </div>
+      <div class="title-banner">WRITE DIRECTLY • PREVIEW YOUR REPORT • DOWNLOAD BEFORE YOU LEAVE</div>
+      <p class="site-subtitle">A focused digital workspace for building a science investigation report.</p>
+    </header>
+
+    <section class="card instruction-card" aria-labelledby="howToHeading">
+      <div class="section-topline">
+        <div>
+          <p class="kicker">Before you begin</p>
+          <h2 id="howToHeading">How to Use This Platform</h2>
+        </div>
+        <span class="status-chip warning">NOT SAVED</span>
+      </div>
+      <ul class="instruction-list">
+        <li>Complete all required fields and write each section directly in the platform.</li>
+        <li>Follow the current <strong>Science Guide</strong> provided by your teacher when completing each part.</li>
+        <li><strong>Your work is not saved.</strong> Refreshing, closing this tab or window, navigating away, or a browser/device problem can permanently clear everything you typed.</li>
+        <li>Use <strong>Preview Report</strong> to check your report and data tables before the final download.</li>
+        <li>Click <strong>Download Final Report</strong> when instructed and make sure the PDF is on your device before leaving class.</li>
+      </ul>
+      <div class="warning-strip"><strong>Important:</strong> There is no Save Draft or Load Draft feature. Keep this page open until your PDF has downloaded.</div>
+    </section>
+
+    <div class="workspace-grid">
+      <aside class="sidebar">
+        <section class="card sticky-card" aria-labelledby="outlineHeading">
+          <p class="kicker">Active structure</p>
+          <h2 id="outlineHeading">Report Outline</h2>
+          <ol id="outlineList" class="outline-list"></ol>
+          <div id="removedSections" class="removed-box" hidden>
+            <h3>Removed parts</h3>
+            <p>Removed parts will not appear in the preview or PDF. You may restore them only while this page remains open.</p>
+            <div id="restoreButtons" class="restore-buttons"></div>
+          </div>
+        </section>
+
+        <section class="card monitoring-card" aria-labelledby="monitoringHeading">
+          <div class="section-topline compact">
+            <div>
+              <p class="kicker">Assessment monitoring</p>
+              <h2 id="monitoringHeading">Focus Activity</h2>
+            </div>
+            <span id="monitoringBadge" class="status-chip neutral">WAITING</span>
+          </div>
+          <p id="monitoringStatus" class="monitoring-status">Monitoring begins when the report unlocks.</p>
+          <div class="monitor-stats">
+            <div><strong id="blockedCount">0</strong><span>Blocked actions</span></div>
+            <div><strong id="leftPageCount">0</strong><span>Left notebook</span></div>
+            <div><strong id="focusExitCount">0</strong><span>Focus exits</span></div>
+            <div><strong id="inactiveCount">0</strong><span>Possible sleep / long inactive</span></div>
+          </div>
+          <button id="focusModeButton" type="button" class="btn btn-secondary full-width" disabled>Enter Focus Mode</button>
+          <p class="fine-print">Focus monitoring is a classroom indicator, not a secure lockdown browser. Long interruptions that look like device sleep are recorded separately instead of automatically counting as leaving the notebook.</p>
+        </section>
+      </aside>
+
+      <main class="main-column">
+        <section class="card" id="studentInfoCard" aria-labelledby="studentInfoHeading">
+          <div class="section-topline">
+            <div>
+              <p class="kicker">Required information</p>
+              <h2 id="studentInfoHeading">Student Information</h2>
+            </div>
+            <span id="documentStatus" class="status-chip neutral">DRAFT</span>
+          </div>
+          <p class="warning-message"><strong>Important:</strong> This page does not save your work. Keep this tab open and download your final PDF before you leave.</p>
+
+          <div class="student-grid">
+            <div class="field field-wide">
+              <label for="experimentTitle">Title of Experiment <span class="required">*</span></label>
+              <input id="experimentTitle" type="text" autocomplete="off" maxlength="180" />
+            </div>
+            <div class="field">
+              <label for="teacher">Teacher <span class="required">*</span></label>
+              <input id="teacher" type="text" autocomplete="off" maxlength="120" />
+            </div>
+            <div class="field">
+              <label for="studentName">Student Name <span class="required">*</span></label>
+              <input id="studentName" type="text" autocomplete="off" maxlength="120" />
+            </div>
+            <div class="field">
+              <label for="date">Date</label>
+              <input id="date" type="text" readonly aria-readonly="true" />
+            </div>
+            <div class="field">
+              <label for="time">Time</label>
+              <input id="time" type="text" readonly aria-readonly="true" />
+            </div>
+            <div class="field">
+              <label for="classCode">Class Code <span class="required">*</span></label>
+              <input id="classCode" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="30" placeholder="Code provided in class" />
+            </div>
+            <div class="field">
+              <label for="programme">Programme</label>
+              <select id="programme">
+                <option value="MYP">MYP</option>
+                <option value="DP">DP</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <div id="gateNotice" class="gate-notice" role="status">
+          Complete the required Student Information fields, including the class code, to unlock the report.
+        </div>
+
+        <fieldset id="reportFields" class="report-fields" disabled>
+          <section class="card report-section" data-section-key="researchQuestion">
+            <div class="report-heading">
+              <div class="part-badge" data-part-number></div>
+              <h2>Research Question</h2>
+              <button type="button" class="remove-part" data-remove-section="researchQuestion">Remove part</button>
+            </div>
+            <textarea id="researchQuestion" class="auto-grow" rows="5" placeholder="Write your research question here."></textarea>
+          </section>
+
+          <section class="card report-section" data-section-key="backgroundInformation">
+            <div class="report-heading">
+              <div class="part-badge" data-part-number></div>
+              <h2>Background Information</h2>
+              <button type="button" class="remove-part" data-remove-section="backgroundInformation">Remove part</button>
+            </div>
+            <textarea id="backgroundInformation" class="auto-grow" rows="9" placeholder="Write your background information here. Follow your current Science Guide."></textarea>
+          </section>
+
+          <section class="card report-section" data-section-key="variables">
+            <div class="report-heading">
+              <div class="part-badge" data-part-number></div>
+              <h2>Variables</h2>
+              <button type="button" class="remove-part" data-remove-section="variables">Remove part</button>
+            </div>
+
+            <div class="stacked-fields">
+              <div class="field">
+                <label for="independentVariable">Independent Variable</label>
+                <textarea id="independentVariable" class="auto-grow" rows="4"></textarea>
+              </div>
+              <div class="field">
+                <label for="dependentVariable">Dependent Variable</label>
+                <textarea id="dependentVariable" class="auto-grow" rows="4"></textarea>
+              </div>
+              <div>
+                <div class="subheading-row">
+                  <div>
+                    <h3>Controlled Variables</h3>
+                    <p class="field-help">Identify each controlled variable, explain how it will be kept constant, and explain what effect not controlling this factor could have on the results of the investigation.</p>
+                  </div>
+                  <button id="addControlledVariable" type="button" class="btn btn-small btn-secondary">+ Add controlled variable</button>
+                </div>
+                <div id="controlledVariablesEditor" class="controlled-editor"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card report-section" data-section-key="hypothesis">
+            <div class="report-heading">
+              <div class="part-badge" data-part-number></div>
+              <h2>Hypothesis</h2>
+              <button type="button" class="remove-part" data-remove-section="hypothesis">Remove part</button>
+            </div>
+            <textarea id="hypothesis" class="auto-grow" rows="6" placeholder="Write your hypothesis here."></textarea>
+          </section>
+
+          <section class="card report-section" data-section-key="materials">
+            <div class="report-heading">
+              <div class="part-badge" data-part-number></div>
+              <h2>Materials</h2>
+              <button type="button" class="remove-part" data-remove-section="materials">Remove part</button>
+            </div>
+            <textarea id="materials" class="auto-grow line-entry" rows="8" placeholder="Enter one material per line."></textarea>
+            <p class="typing-tip">Press <kbd>Enter</kbd> to add the next material. Materials will be spaced apart in the PDF without bullets.</p>
+          </section>
+
+          <section class="card report-section" data-section-key="procedure">
+            <div class="report-heading">
+              <div class="part-badge" data-part-number></div>
+              <h2>Procedure</h2>
+              <button type="button" class="remove-part" data-remove-section="procedure">Remove part</button>
+            </div>
+            <textarea id="procedure" class="auto-grow line-entry" rows="10" placeholder="Enter each procedure step on a new line."></textarea>
+            <p class="typing-tip">Press <kbd>Enter</kbd> to add the next step. The platform will not number the steps for you.</p>
+          </section>
+
+          <section class="card report-section" data-section-key="rawData">
+            <div class="report-heading">
+              <div class="part-badge" data-part-number></div>
+              <h2>Raw Data</h2>
+              <button type="button" class="remove-part" data-remove-section="rawData">Remove part</button>
+            </div>
+            <p class="field-help">Create and edit your raw-data table(s). Type directly into every heading and cell.</p>
+            <div id="rawDataEditor" class="table-editor"></div>
+            <button type="button" class="btn btn-secondary btn-small" data-add-table="rawData">+ Add another table</button>
+          </section>
+
+          <section class="card report-section" data-section-key="processedData">
+            <div class="report-heading">
+              <div class="part-badge" data-part-number></div>
+              <h2>Processed Data</h2>
+              <button type="button" class="remove-part" data-remove-section="processedData">Remove part</button>
+            </div>
+
+            <div class="field">
+              <label for="calculationDescription">Description of Calculation</label>
+              <textarea id="calculationDescription" class="auto-grow" rows="5"></textarea>
+            </div>
+            <div class="field">
+              <label for="sampleCalculation">Sample Calculation</label>
+              <textarea id="sampleCalculation" class="auto-grow" rows="5"></textarea>
+            </div>
+
+            <div class="upload-panel">
+              <div>
+                <h3>Optional handwritten calculation image</h3>
+                <p class="field-help">Upload one clear image if your sample calculation was completed by hand.</p>
+              </div>
+              <input id="calculationImage" type="file" accept="image/png,image/jpeg,image/webp" />
+              <img id="calculationImagePreview" class="upload-preview" alt="Preview of handwritten sample calculation" hidden />
+              <button id="removeCalculationImage" type="button" class="btn btn-small btn-secondary" hidden>Remove image</button>
+              <p id="calculationImageStatus" class="fine-print" aria-live="polite"></p>
+            </div>
+
+            <div class="subheading-row table-subheading">
+              <div>
+                <h3>Processed Data Table(s)</h3>
+                <p class="field-help">Edit the table structure to match the processed data you need to present.</p>
+              </div>
+            </div>
+            <div id="processedDataEditor" class="table-editor"></div>
+            <button type="button" class="btn btn-secondary btn-small" data-add-table="processedData">+ Add another table</button>
+
+            <div class="figures-panel">
+              <div class="subheading-row">
+                <div>
+                  <h3>Graphs &amp; Figures <span class="optional-label">optional</span></h3>
+                  <p class="field-help">Upload a graph or figure if it belongs in your report. Add a title and brief explanation for each.</p>
+                </div>
+                <button id="addFigure" type="button" class="btn btn-small btn-secondary">+ Add graph or figure</button>
+              </div>
+              <div id="figureEntries" class="figure-entries"></div>
+            </div>
+          </section>
+
+          <section class="card report-section" data-section-key="conclusion">
+            <div class="report-heading">
+              <div class="part-badge" data-part-number></div>
+              <h2>Conclusion (CER)</h2>
+              <button type="button" class="remove-part" data-remove-section="conclusion">Remove part</button>
+            </div>
+            <textarea id="conclusion" class="auto-grow" rows="10"></textarea>
+          </section>
+
+          <section class="card report-section" data-section-key="evaluation">
+            <div class="report-heading">
+              <div class="part-badge" data-part-number></div>
+              <h2>Evaluation</h2>
+              <button type="button" class="remove-part" data-remove-section="evaluation">Remove part</button>
+            </div>
+            <textarea id="evaluation" class="auto-grow" rows="10"></textarea>
+          </section>
+
+          <section class="card report-section" data-section-key="improvements">
+            <div class="report-heading">
+              <div class="part-badge" data-part-number></div>
+              <h2>Improvements</h2>
+              <button type="button" class="remove-part" data-remove-section="improvements">Remove part</button>
+            </div>
+            <textarea id="improvements" class="auto-grow" rows="10"></textarea>
+          </section>
+
+          <section class="card report-section" data-section-key="references">
+            <div class="report-heading">
+              <div class="part-badge" data-part-number></div>
+              <h2>References (APA 7)</h2>
+              <button type="button" class="remove-part" data-remove-section="references">Remove part</button>
+            </div>
+            <p class="field-help">Type each reference directly. Copying and pasting are disabled in this notebook.</p>
+            <div id="referenceEntries" class="reference-entries"></div>
+            <button id="addReference" type="button" class="btn btn-small btn-secondary">+ Add another reference</button>
+          </section>
+        </fieldset>
+
+        <section class="card final-card" aria-labelledby="finalHeading">
+          <div>
+            <p class="kicker">Final report</p>
+            <h2 id="finalHeading">Review and Download Your Work</h2>
+            <p>Preview the complete report first, especially your data tables. Your preview is not saved.</p>
+          </div>
+          <div class="final-actions">
+            <span id="saveStatus" class="not-saved">Not saved — keep this tab open</span>
+            <div class="button-row">
+              <button id="previewReport" type="button" class="btn btn-secondary" disabled>Preview Report</button>
+              <button id="downloadFinal" type="button" class="btn btn-primary" disabled>Download Final Report ↓</button>
+              <button id="startNewReport" type="button" class="btn btn-secondary" hidden>Start New Report</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="blockedDialog" class="modal warning-modal">
+    <form method="dialog" class="modal-card">
+      <div class="modal-symbol">!</div>
+      <h2>That action is disabled</h2>
+      <p id="blockedMessage">Copying and pasting are disabled. Please type your own work directly in the Science Lab Notebook.</p>
+      <button class="btn btn-primary" value="close">Continue writing</button>
+    </form>
+  </dialog>
+
+  <dialog id="focusDialog" class="modal warning-modal">
+    <form method="dialog" class="modal-card">
+      <div class="modal-symbol">!</div>
+      <h2>Assessment focus interrupted</h2>
+      <p id="focusMessage">The Science Lab Notebook was no longer the active assessment page. This event has been recorded.</p>
+      <button class="btn btn-primary" value="close">Return to notebook</button>
+    </form>
+  </dialog>
+
+  <dialog id="removeSectionDialog" class="modal warning-modal">
+    <div class="modal-card">
+      <div class="modal-symbol">!</div>
+      <h2>Remove this part from the report?</h2>
+      <p id="removeSectionMessage">This part will not be included in your report preview or final PDF.</p>
+      <div class="modal-callout">Double-check before removing it. Your typed content can be restored only while this same page remains open. Refreshing or closing the page permanently clears it.</div>
+      <div class="button-row end">
+        <button id="cancelRemoveSection" type="button" class="btn btn-secondary">Keep part</button>
+        <button id="confirmRemoveSection" type="button" class="btn btn-danger">Remove part</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="previewDialog" class="preview-dialog">
+    <div class="preview-shell">
+      <div class="preview-toolbar">
+        <div>
+          <p class="kicker">Preview only</p>
+          <h2>Your report has not been saved</h2>
+        </div>
+        <div class="button-row">
+          <button id="returnToEditing" type="button" class="btn btn-secondary">Return to Editing</button>
+          <button id="downloadFromPreview" type="button" class="btn btn-primary">Download Final Report ↓</button>
+        </div>
+      </div>
+      <div class="preview-warning"><strong>Check before downloading:</strong> table headings, units, row/column widths, missing responses, and uploaded images.</div>
+      <div class="preview-page-wrap">
+        <article id="reportPreview" class="preview-page"></article>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="downloadDialog" class="modal warning-modal">
+    <div class="modal-card">
+      <div class="modal-symbol check">✓</div>
+      <h2>Download and lock this report?</h2>
+      <p>The final PDF will download immediately. After the download, the report becomes read-only while this tab stays open.</p>
+      <div class="modal-callout">Make sure you have previewed your report. There is no saved draft to return to if this tab is refreshed or closed.</div>
+      <div class="button-row end">
+        <button id="cancelDownload" type="button" class="btn btn-secondary">Go back</button>
+        <button id="confirmDownload" type="button" class="btn btn-primary">Download &amp; Lock</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="newReportDialog" class="modal warning-modal">
+    <div class="modal-card">
+      <div class="modal-symbol">!</div>
+      <h2>Start a new report?</h2>
+      <p>A fresh blank report will replace everything currently on this page.</p>
+      <div class="modal-callout">Make sure the PDF you need has already downloaded. There is no saved copy to recover.</div>
+      <div class="button-row end">
+        <button id="cancelNewReport" type="button" class="btn btn-secondary">Cancel</button>
+        <button id="confirmNewReport" type="button" class="btn btn-danger">Start New Report</button>
+      </div>
+    </div>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.2/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
