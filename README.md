@@ -1,5 +1,5 @@
-# Science Lab Notebook — Version 7
+# Science Lab Notebook — Version 8
 
 Static GitHub Pages build of the Science Lab Notebook.
 
-This version refines the page header and the Before You Begin instructions while preserving the report-writing, monitoring, preview, watermark, table, and PDF features from the previous version.
+This version refines the top title typography and spacing and changes the Important-message symbol to an orange triangular warning icon, while preserving all report-writing and monitoring functionality from Version 7.

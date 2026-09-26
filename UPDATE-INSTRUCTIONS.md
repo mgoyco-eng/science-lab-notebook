@@ -1,4 +1,4 @@
-# Science Lab Notebook — Version 7 update
+# Science Lab Notebook — Version 8 update
 
 Replace these three files in the GitHub repository:
 
@@ -8,13 +8,14 @@ Replace these three files in the GitHub repository:
 
 Suggested commit message:
 
-**Refine header layout and Before You Begin instructions**
+**Refine title lettering and warning icon**
 
 ## Changes in this version
 
-- Moves the Science Lab Notebook title to the upper left.
-- Moves the write/preview/download message and subtitle to the right for a lighter header layout.
-- Changes `Lab Notebook` to a more connected handwritten script and adds a hand-drawn-style blue underline.
-- Reorders Before You Begin so the instructions appear first.
-- Combines the no-copy/paste warning and no-saving warning into one prominent Important box with an exclamation mark.
-- Tells students to keep their current Science Guide readily available and use it as a reference while working.
+- Makes both `SCIENCE` and `Lab Notebook` noticeably larger so the left side of the header fills more of the available space.
+- Tightens the space between the title area and the information on the right.
+- Changes `Lab Notebook` to a heavier, clearly connected handwritten script and keeps the loose blue hand-drawn underline.
+- Replaces the plain exclamation block with an orange triangular warning symbol styled like the reference image.
+- Keeps all Version 7 wording, report structure, monitoring, tables, preview, watermark, and PDF behavior unchanged.
+
+After GitHub Pages redeploys, use **Command + Shift + R** on a Mac (or **Ctrl + Shift + R** on Windows) to force the browser to load the new font and stylesheet.
