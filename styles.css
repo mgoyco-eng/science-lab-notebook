@@ -88,7 +88,7 @@ button:disabled { cursor: not-allowed; opacity: .52; }
 .title-script {
   position: relative;
   display: inline-block;
-  font-family: "Pacifico", "Brush Script MT", "Segoe Script", cursive;
+  font-family: "Kaushan Script", "Brush Script MT", "Segoe Script", cursive;
   font-weight: 400;
   font-size: clamp(4rem, 6.1vw, 6.35rem);
   line-height: .82;
