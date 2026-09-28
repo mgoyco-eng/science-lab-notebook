@@ -1460,16 +1460,16 @@
       doc.roundedRect(margin, y, usableWidth, 56, 7, 7, "F");
       doc.setTextColor(255, 255, 255);
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(20);
+      doc.setFontSize(14);
       doc.text("SCIENCE LAB NOTEBOOK", margin + 16, y + 24);
       doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
+      doc.setFontSize(11);
       doc.text("Final laboratory report", margin + 16, y + 41);
       y += 72;
 
       doc.setTextColor(...COLORS.navy);
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(15);
+      doc.setFontSize(14);
       const titleLines = doc.splitTextToSize(els.experimentTitle.value.trim() || "Untitled Experiment", usableWidth);
       doc.text(titleLines, margin, y);
       y += titleLines.length * 17 + 10;
@@ -1478,7 +1478,7 @@
         startY: y,
         theme: "grid",
         margin: { left: margin, right: margin },
-        styles: { font: "helvetica", fontSize: 8.5, cellPadding: 5, textColor: COLORS.ink, lineColor: COLORS.line, lineWidth: 0.5 },
+        styles: { font: "helvetica", fontSize: 11, cellPadding: 5, textColor: COLORS.ink, lineColor: COLORS.line, lineWidth: 0.5 },
         headStyles: { fillColor: COLORS.pale, textColor: COLORS.navy, fontStyle: "bold" },
         body: [
           ["Student", els.studentName.value || "—", "Teacher", els.teacher.value || "—"],
@@ -1504,24 +1504,24 @@
       y += 16;
       doc.setTextColor(...COLORS.navy);
       doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
+      doc.setFontSize(14);
       doc.text("ASSESSMENT ACTIVITY SUMMARY", margin, y);
       y += 8;
       doc.autoTable({
         startY: y,
         theme: "grid",
         margin: { left: margin, right: margin },
-        styles: { font: "helvetica", fontSize: 7.8, halign: "center", cellPadding: 4, lineColor: COLORS.line, lineWidth: 0.45 },
+        styles: { font: "helvetica", fontSize: 11, halign: "center", cellPadding: 4, lineColor: COLORS.line, lineWidth: 0.45 },
         head: [["Blocked actions", "Left notebook", "Focus exits", "Possible sleep / long inactive"]],
         body: [[state.blockedAttempts, state.leftPageCount, state.focusExitCount, state.inactiveCount]],
         headStyles: { fillColor: COLORS.pale, textColor: COLORS.navy, fontStyle: "bold" }
       });
       y = doc.lastAutoTable.finalY + 10;
-      y = addPdfParagraph(doc, "Monitoring indicators provide classroom context and should not be treated as proof of misconduct by themselves.", y, margin, usableWidth, pageHeight, 7.5, COLORS.muted);
+      y = addPdfParagraph(doc, "Monitoring indicators provide classroom context and should not be treated as proof of misconduct by themselves.", y, margin, usableWidth, pageHeight, 11, COLORS.muted);
       const activityLines = buildActivityLines();
       if (activityLines.length) {
         y += 5;
-        y = addPdfParagraph(doc, activityLines.join("\n"), y, margin, usableWidth, pageHeight, 7.2, COLORS.muted);
+        y = addPdfParagraph(doc, activityLines.join("\n"), y, margin, usableWidth, pageHeight, 11, COLORS.muted);
       }
 
       const pages = doc.getNumberOfPages();
@@ -1544,7 +1544,7 @@
         });
 
         doc.setFont("helvetica", "normal");
-        doc.setFontSize(7.5);
+        doc.setFontSize(11);
         doc.setTextColor(120, 132, 146);
         doc.text(watermarkText, margin, pageHeight - 24);
         doc.text(`Page ${p} of ${pages}`, pageWidth - margin, pageHeight - 24, { align: "right" });
@@ -1564,16 +1564,16 @@
 
   function addPdfSectionHeading(doc, y, number, label, margin, usableWidth) {
     doc.setFillColor(...COLORS.navy);
-    doc.circle(margin + 11, y + 2, 10, "F");
+    doc.circle(margin + 12, y + 2, 12, "F");
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.text(toRoman(number), margin + 11, y + 5, { align: "center" });
+    doc.setFontSize(11);
+    doc.text(toRoman(number), margin + 12, y + 5, { align: "center" });
     doc.setTextColor(...COLORS.navy);
-    doc.setFontSize(12);
-    doc.text(label, margin + 29, y + 6);
+    doc.setFontSize(14);
+    doc.text(label, margin + 34, y + 6);
     doc.setDrawColor(...COLORS.line);
-    doc.line(margin + 29, y + 12, margin + usableWidth, y + 12);
+    doc.line(margin + 34, y + 12, margin + usableWidth, y + 12);
     return y + 27;
   }
 
@@ -1600,14 +1600,14 @@
       y += 8;
       y = addPdfSubheading(doc, "Controlled Variables", y, margin);
       const rows = state.controlledVariables.filter((row) => row.variable.trim() || row.control.trim());
-      if (!rows.length) return addPdfParagraph(doc, "No controlled variables entered.", y, margin, usableWidth, pageHeight, 9, COLORS.muted);
+      if (!rows.length) return addPdfParagraph(doc, "No controlled variables entered.", y, margin, usableWidth, pageHeight, 12, COLORS.muted);
       doc.autoTable({
         startY: y,
         theme: "grid",
         margin: { left: margin, right: margin },
         head: [["Factor", "Details"]],
         body: rows.map((row) => [row.variable, row.control]),
-        styles: { font: "helvetica", fontSize: 8, cellPadding: 4, lineColor: COLORS.line, lineWidth: 0.45, textColor: COLORS.ink, overflow: "linebreak" },
+        styles: { font: "helvetica", fontSize: 11, cellPadding: 4, lineColor: COLORS.line, lineWidth: 0.45, textColor: COLORS.ink, overflow: "linebreak" },
         headStyles: { fillColor: [234, 247, 250], textColor: COLORS.navy, fontStyle: "bold" }
       });
       return doc.lastAutoTable.finalY + 4;
@@ -1615,9 +1615,9 @@
 
     if (key === "materials" || key === "procedure") {
       const lines = $(key).value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
-      if (!lines.length) return addPdfParagraph(doc, "No response entered.", y, margin, usableWidth, pageHeight, 9, COLORS.muted);
+      if (!lines.length) return addPdfParagraph(doc, "No response entered.", y, margin, usableWidth, pageHeight, 12, COLORS.muted);
       for (const line of lines) {
-        y = addPdfParagraph(doc, line, y, margin, usableWidth, pageHeight, 9.2, COLORS.ink, 4);
+        y = addPdfParagraph(doc, line, y, margin, usableWidth, pageHeight, 12, COLORS.ink, 4);
         y += 3;
       }
       return y;
@@ -1645,16 +1645,16 @@
         y += 8;
         y = addPdfSubheading(doc, figure.title.trim() || `Figure ${i + 1}`, y, margin);
         if (figure.dataUrl) y = addPdfImage(doc, figure.dataUrl, y, margin, usableWidth, pageHeight, figure.title || `Figure ${i + 1}`);
-        if (figure.description.trim()) y = addPdfParagraph(doc, figure.description, y + 4, margin, usableWidth, pageHeight, 8.8);
+        if (figure.description.trim()) y = addPdfParagraph(doc, figure.description, y + 4, margin, usableWidth, pageHeight, 12);
       }
       return y;
     }
 
     if (key === "references") {
       const references = state.references.map((reference) => reference.text.trim()).filter(Boolean);
-      if (!references.length) return addPdfParagraph(doc, "No references entered.", y, margin, usableWidth, pageHeight, 9, COLORS.muted);
+      if (!references.length) return addPdfParagraph(doc, "No references entered.", y, margin, usableWidth, pageHeight, 12, COLORS.muted);
       for (const reference of references) {
-        y = addPdfParagraph(doc, reference, y, margin + 16, usableWidth - 16, pageHeight, 8.8, COLORS.ink, 4);
+        y = addPdfParagraph(doc, reference, y, margin + 16, usableWidth - 16, pageHeight, 12, COLORS.ink, 4);
         y += 5;
       }
       return y;
@@ -1669,12 +1669,12 @@
       if (table.title.trim()) {
         doc.setTextColor(...COLORS.ink);
         doc.setFont("helvetica", "bold");
-        doc.setFontSize(9.2);
+        doc.setFontSize(14);
         doc.text(table.title.trim(), margin, y);
         y += 7;
       }
       const colCount = table.headers.length;
-      const fontSize = Math.max(6.2, 8.4 - Math.max(0, colCount - 5) * 0.45);
+      const fontSize = 11;
       const headRows = [];
       if (table.groupedHeading) {
         normalizeGroupedHeading(table);
@@ -1715,12 +1715,12 @@
   function addPdfSubheading(doc, text, y, margin) {
     doc.setTextColor(...COLORS.navy);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(9.5);
+    doc.setFontSize(14);
     doc.text(text, margin, y);
     return y + 12;
   }
 
-  function addPdfParagraph(doc, text, y, x, width, pageHeight, fontSize = 9.4, color = COLORS.ink, extraLeading = 2) {
+  function addPdfParagraph(doc, text, y, x, width, pageHeight, fontSize = 12, color = COLORS.ink, extraLeading = 3) {
     const marginBottom = 44;
     doc.setTextColor(...color);
     doc.setFont("helvetica", "normal");
@@ -1758,7 +1758,7 @@
     doc.addImage(dataUrl, "JPEG", x, y, width, height, undefined, "FAST");
     y += height + 5;
     doc.setFont("helvetica", "italic");
-    doc.setFontSize(7.5);
+    doc.setFontSize(11);
     doc.setTextColor(...COLORS.muted);
     doc.text(label, margin, y);
     return y + 8;

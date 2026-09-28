@@ -1,5 +1,5 @@
-# Science Lab Notebook — Version 8
+# Science Lab Notebook — Version 11
 
-Static GitHub Pages build of the Science Lab Notebook.
+Version 11 keeps the current webpage design and functionality while standardizing final PDF typography for easier reading.
 
-This version refines the top title typography and spacing and changes the Important-message symbol to an orange triangular warning icon, while preserving all report-writing and monitoring functionality from Version 7.
+The final PDF now uses 14 pt headings/subheadings, 12 pt student-written text, and no PDF text smaller than 11 pt.

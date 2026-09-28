@@ -1,11 +1,18 @@
-# Version 10 update
+# Science Lab Notebook — Version 11
 
-This update changes only the **Lab Notebook** script font to **Kaushan Script**, matching the earlier webpage version shown in the reference screenshot. All other Version 9 layout and behavior remain unchanged.
+This update standardizes the typography in the **downloaded final PDF**.
 
-Replace these files in the GitHub repository:
-- `index.html`
-- `styles.css`
+## PDF font sizes
+- Headings and subheadings: **14 pt**
+- Student-written paragraphs: **12 pt**
+- Tables, labels, captions, monitoring text, page numbers, and other PDF text: **11 pt minimum**
+- Student watermark: remains slightly larger than the minimum for visibility
 
-Suggested commit message: `Restore Kaushan Script heading font`
+Because the larger type uses more vertical space, longer reports may produce more PDF pages than earlier versions.
 
-After GitHub Pages redeploys, hard-refresh the live page with **Command + Shift + R** on Mac.
+## Updating GitHub
+Only `app.js` changed in this version. On the repository Code page, choose **Add file → Upload files**, upload the new `app.js`, and commit it to `main`.
+
+Suggested commit message:
+
+`Standardize final PDF font sizes`
