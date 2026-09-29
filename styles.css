@@ -59,7 +59,7 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   overflow: visible;
   position: relative;
   display: grid;
-  grid-template-columns: minmax(650px, 1.24fr) minmax(390px, .76fr);
+  grid-template-columns: minmax(760px, 1.32fr) minmax(340px, .68fr);
   align-items: center;
   gap: 18px;
 }
@@ -68,9 +68,9 @@ button:disabled { cursor: not-allowed; opacity: .52; }
 
 .title-lockup {
   display: inline-flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: flex-start;
-  gap: 12px;
+  gap: 14px;
   flex-wrap: nowrap;
   color: var(--navy);
   text-align: left;
@@ -81,19 +81,18 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   font-family: "Oswald", "Arial Narrow", Impact, sans-serif;
   font-weight: 700;
   letter-spacing: .015em;
-  font-size: clamp(3.25rem, 5vw, 5.15rem);
-  line-height: .9;
+  font-size: clamp(4.5rem, 6.4vw, 6.75rem);
+  line-height: .84;
 }
 
 
 .title-script-image {
   display: block;
-  width: clamp(365px, 38vw, 560px);
+  width: clamp(430px, 40vw, 620px);
   height: auto;
   max-width: 100%;
   object-fit: contain;
-  mix-blend-mode: multiply;
-  transform: translateY(2px);
+    transform: translateY(0);
 }
 .header-intro {
   justify-self: stretch;
@@ -369,7 +368,7 @@ h3 { margin: 0; color: var(--navy); font-size: 1rem; }
 .focus-control-action {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   flex: 0 0 auto;
 }
 .focus-button { min-width: 180px; }
@@ -631,7 +630,7 @@ kbd {
   color: var(--muted);
   vertical-align: middle;
 }
-.figure-entries { display: grid; gap: 12px; margin-top: 12px; }
+.figure-entries { display: grid; gap: 14px; margin-top: 12px; }
 .figure-card {
   display: grid;
   gap: 10px;
@@ -816,7 +815,7 @@ kbd {
     gap: 18px;
   }
   .title-lockup { flex-wrap: wrap; }
-  .title-script-image { width: min(72vw, 560px); }
+  .title-script-image { width: min(78vw, 620px); }
   .header-intro { justify-self: start; text-align: left; }
   .site-subtitle { margin-left: 0; text-align: left; }
   .workspace-grid { grid-template-columns: 1fr; }
@@ -840,7 +839,7 @@ kbd {
   .site-header { padding: 10px 8px 20px; gap: 14px; }
   .card { border-radius: 14px; padding: 18px; }
   .title-lockup { gap: 7px; }
-  .title-script-image { width: min(76vw, 500px); }
+  .title-script-image { width: min(82vw, 560px); }
   .title-banner { font-size: .68rem; letter-spacing: .06em; }
   .student-grid, .sidebar { grid-template-columns: 1fr; }
   .important-message { grid-template-columns: 72px 1fr; }
