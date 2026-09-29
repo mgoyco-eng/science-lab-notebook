@@ -1,5 +1,8 @@
-# Science Lab Notebook — Version 11
+# Science Lab Notebook — Version 12
 
-Version 11 keeps the current webpage design and functionality while standardizing final PDF typography for easier reading.
+The page now uses the supplied **Lab Notebook** artwork as an image in the header instead of attempting to reproduce the lettering with a web font.
 
-The final PDF now uses 14 pt headings/subheadings, 12 pt student-written text, and no PDF text smaller than 11 pt.
+The included `app.js` preserves the Version 11 PDF typography settings:
+- headings/subheadings: 14 pt
+- student-written paragraphs: 12 pt
+- other PDF text: no smaller than 11 pt

@@ -59,7 +59,7 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   overflow: visible;
   position: relative;
   display: grid;
-  grid-template-columns: minmax(520px, 1.18fr) minmax(390px, .82fr);
+  grid-template-columns: minmax(650px, 1.24fr) minmax(390px, .76fr);
   align-items: center;
   gap: 18px;
 }
@@ -70,8 +70,8 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   display: inline-flex;
   align-items: baseline;
   justify-content: flex-start;
-  gap: 10px;
-  flex-wrap: wrap;
+  gap: 12px;
+  flex-wrap: nowrap;
   color: var(--navy);
   text-align: left;
   width: fit-content;
@@ -81,36 +81,20 @@ button:disabled { cursor: not-allowed; opacity: .52; }
   font-family: "Oswald", "Arial Narrow", Impact, sans-serif;
   font-weight: 700;
   letter-spacing: .015em;
-  font-size: clamp(3rem, 4.8vw, 4.8rem);
+  font-size: clamp(3.25rem, 5vw, 5.15rem);
   line-height: .9;
 }
 
-.title-script {
-  position: relative;
-  display: inline-block;
-  font-family: "Kaushan Script", "Brush Script MT", "Segoe Script", cursive;
-  font-weight: 400;
-  font-size: clamp(4rem, 6.1vw, 6.35rem);
-  line-height: .82;
-  letter-spacing: -.045em;
-  transform: rotate(-1deg);
-  padding: 0 7px 18px 1px;
-  white-space: nowrap;
-}
 
-.title-script::after {
-  content: "";
-  position: absolute;
-  left: 3%;
-  right: -1%;
-  bottom: 1px;
-  height: 12px;
-  border-top: 7px solid #55b8f5;
-  border-radius: 52%;
-  transform: rotate(-1.6deg) skewX(-7deg);
-  opacity: .95;
+.title-script-image {
+  display: block;
+  width: clamp(365px, 38vw, 560px);
+  height: auto;
+  max-width: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  transform: translateY(2px);
 }
-
 .header-intro {
   justify-self: stretch;
   max-width: 590px;
@@ -831,6 +815,8 @@ kbd {
     grid-template-columns: 1fr;
     gap: 18px;
   }
+  .title-lockup { flex-wrap: wrap; }
+  .title-script-image { width: min(72vw, 560px); }
   .header-intro { justify-self: start; text-align: left; }
   .site-subtitle { margin-left: 0; text-align: left; }
   .workspace-grid { grid-template-columns: 1fr; }
@@ -854,8 +840,7 @@ kbd {
   .site-header { padding: 10px 8px 20px; gap: 14px; }
   .card { border-radius: 14px; padding: 18px; }
   .title-lockup { gap: 7px; }
-  .title-script { padding-bottom: 12px; }
-  .title-script::after { border-top-width: 5px; height: 8px; }
+  .title-script-image { width: min(76vw, 500px); }
   .title-banner { font-size: .68rem; letter-spacing: .06em; }
   .student-grid, .sidebar { grid-template-columns: 1fr; }
   .important-message { grid-template-columns: 72px 1fr; }

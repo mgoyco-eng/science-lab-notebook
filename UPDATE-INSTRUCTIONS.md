@@ -1,18 +1,16 @@
-# Science Lab Notebook — Version 11
+# Science Lab Notebook — Version 12
 
-This update standardizes the typography in the **downloaded final PDF**.
+This version replaces the typed **Lab Notebook** script with the exact heading image supplied by the teacher.
 
-## PDF font sizes
-- Headings and subheadings: **14 pt**
-- Student-written paragraphs: **12 pt**
-- Tables, labels, captions, monitoring text, page numbers, and other PDF text: **11 pt minimum**
-- Student watermark: remains slightly larger than the minimum for visibility
+## Files to upload to GitHub
+Replace/upload:
+- `index.html`
+- `styles.css`
+- `lab-notebook-heading.png`
 
-Because the larger type uses more vertical space, longer reports may produce more PDF pages than earlier versions.
+`app.js` does not need to be replaced if Version 11 is already live.
 
-## Updating GitHub
-Only `app.js` changed in this version. On the repository Code page, choose **Add file → Upload files**, upload the new `app.js`, and commit it to `main`.
+## Suggested commit message
+`Use image for Lab Notebook heading`
 
-Suggested commit message:
-
-`Standardize final PDF font sizes`
+After GitHub Pages redeploys, hard-refresh the live page with **Command + Shift + R** on Mac.
