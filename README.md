@@ -1,7 +1,5 @@
-# Science Lab Notebook — Version 13
+# Science Lab Notebook — Version 14
 
-Header refinement update:
-- enlarged **SCIENCE** for better visual balance with the artwork
-- converted the **Lab Notebook** artwork to a transparent-background PNG
+This version adds an iPad/iPadOS monitoring compatibility fix.
 
-All previous report, preview, and PDF behavior remains unchanged.
+The page now avoids treating ordinary iPad touch interactions as loss of focus while still recording genuine page hiding through the browser visibility API.

@@ -985,6 +985,24 @@
       state.lastHeartbeat = Date.now();
     }, 1000);
 
+    // iPad/iPadOS Safari can fire window blur during ordinary touches,
+    // button presses, dialogs, file pickers, and other in-page interactions.
+    // Treat visibilitychange as the reliable page-leaving signal on Apple
+    // touch devices so normal notebook controls are not falsely recorded.
+    const isAppleTouchDevice =
+      /iPad|iPhone|iPod/i.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+    let internalInteractionUntil = 0;
+
+    const markInternalInteraction = () => {
+      internalInteractionUntil = Date.now() + 1500;
+    };
+
+    document.addEventListener("pointerdown", markInternalInteraction, true);
+    document.addEventListener("touchstart", markInternalInteraction, { capture: true, passive: true });
+    document.addEventListener("click", markInternalInteraction, true);
+
     document.addEventListener("visibilitychange", () => {
       if (!state.unlocked || state.submitted) return;
       if (document.hidden) {
@@ -997,6 +1015,15 @@
 
     window.addEventListener("blur", () => {
       if (document.hidden) return;
+
+      // On iPad/iPadOS, window blur is too noisy to use as evidence that
+      // the student left the notebook. visibilitychange remains active.
+      if (isAppleTouchDevice) return;
+
+      // On other devices, ignore blur immediately caused by a click/touch
+      // that began inside the Science Lab Notebook itself.
+      if (Date.now() < internalInteractionUntil) return;
+
       beginAway("window-blur");
     });
 

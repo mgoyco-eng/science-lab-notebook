@@ -1,18 +1,25 @@
-# Science Lab Notebook — Version 13
+# Science Lab Notebook — Version 14 (iPad monitoring fix)
 
-This version makes two header refinements:
+## What changed
+This version fixes false “Left notebook” events on iPad/iPadOS Safari.
 
-- **SCIENCE** is enlarged to visually match the height of the **Lab Notebook** artwork.
-- The **Lab Notebook** image now uses a **transparent background**, so it blends cleanly with the page background.
+- iPad/iPadOS no longer uses `window.blur` as a leave-page signal.
+- Genuine page hiding is still monitored through `visibilitychange`.
+- A short internal-interaction grace period was added for clicks/touches inside the notebook.
+- Buttons such as Remove Part, Preview Report, and Download Final Report should now work normally on iPad.
+- Laptop/desktop monitoring remains in place.
 
-## Files to upload to GitHub
-Replace/upload these files:
-- `styles.css`
-- `lab-notebook-heading.png`
+## File to replace in GitHub
+Only replace:
+- `app.js`
 
-`index.html` and `app.js` do not need to be replaced if Version 12/11 are already live.
+The other included files are provided only so this ZIP is a complete snapshot.
 
 ## Suggested commit message
-`Enlarge SCIENCE and make heading image transparent`
+`Fix iPad focus monitoring`
 
-After GitHub Pages redeploys, hard-refresh the live page with **Command + Shift + R** on Mac.
+After GitHub Pages redeploys, hard-refresh the site on the iPad and test:
+1. Remove/restore a section
+2. Preview Report
+3. Download Final Report
+4. Switch to another tab/app and return
