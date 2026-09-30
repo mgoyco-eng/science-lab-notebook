@@ -1,25 +1,18 @@
-# Science Lab Notebook — Version 14 (iPad monitoring fix)
+# Science Lab Notebook — Version 15 (iPad-safe mode)
 
 ## What changed
-This version fixes false “Left notebook” events on iPad/iPadOS Safari.
-
-- iPad/iPadOS no longer uses `window.blur` as a leave-page signal.
-- Genuine page hiding is still monitored through `visibilitychange`.
-- A short internal-interaction grace period was added for clicks/touches inside the notebook.
-- Buttons such as Remove Part, Preview Report, and Download Final Report should now work normally on iPad.
-- Laptop/desktop monitoring remains in place.
+- iPad no longer requests true browser fullscreen.
+- iPad no longer requests a screen wake lock.
+- iPad Focus Mode now unlocks the report as a monitored in-page mode.
+- Genuine tab/app hiding is still tracked through `visibilitychange`.
+- Focus-loss events on iPad are recorded without opening another blocking modal.
+- Desktop/laptop behavior remains unchanged.
 
 ## File to replace in GitHub
 Only replace:
 - `app.js`
 
-The other included files are provided only so this ZIP is a complete snapshot.
-
 ## Suggested commit message
-`Fix iPad focus monitoring`
+`Add iPad-safe Focus Mode`
 
-After GitHub Pages redeploys, hard-refresh the site on the iPad and test:
-1. Remove/restore a section
-2. Preview Report
-3. Download Final Report
-4. Switch to another tab/app and return
+After GitHub Pages redeploys, fully close the old Safari tab on the iPad, reopen the notebook in a fresh tab, and test again.

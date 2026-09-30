@@ -49,6 +49,11 @@
 
   const startedAt = new Date();
 
+  // iPadOS often identifies itself as a Mac while still using touch.
+  const IS_APPLE_TOUCH_DEVICE =
+    /iPad|iPhone|iPod/i.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
   const state = {
     unlocked: false,
     submitted: false,
@@ -989,10 +994,6 @@
     // button presses, dialogs, file pickers, and other in-page interactions.
     // Treat visibilitychange as the reliable page-leaving signal on Apple
     // touch devices so normal notebook controls are not falsely recorded.
-    const isAppleTouchDevice =
-      /iPad|iPhone|iPod/i.test(navigator.userAgent) ||
-      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-
     let internalInteractionUntil = 0;
 
     const markInternalInteraction = () => {
@@ -1018,7 +1019,7 @@
 
       // On iPad/iPadOS, window blur is too noisy to use as evidence that
       // the student left the notebook. visibilitychange remains active.
-      if (isAppleTouchDevice) return;
+      if (IS_APPLE_TOUCH_DEVICE) return;
 
       // On other devices, ignore blur immediately caused by a click/touch
       // that began inside the Science Lab Notebook itself.
@@ -1075,6 +1076,14 @@
     state.leftPageCount += 1;
     state.focusLossEvents.push({ reason: session.reason, at: new Date().toISOString(), durationMs });
     updateCounts();
+
+    // On iPad, avoid stacking another blocking modal on top of Safari's
+    // native UI. The event is still recorded in Assessment Monitoring.
+    if (IS_APPLE_TOUCH_DEVICE) {
+      els.monitoringStatus.textContent = "The notebook was hidden or left briefly. The event was recorded.";
+      return;
+    }
+
     els.focusMessage.textContent = "The Science Lab Notebook was no longer the active assessment page. This event has been recorded.";
     if (!els.focusDialog.open && !anyBlockingDialogOpen()) els.focusDialog.showModal();
   }
@@ -1085,6 +1094,26 @@
 
   async function toggleFocusMode() {
     if (!state.unlocked || state.submitted) return;
+
+    // iPad/iPadOS Safari can become unstable when a form-heavy page mixes
+    // fullscreen, native dialogs, downloads, file pickers, and wake locks.
+    // Use a monitored in-page Focus Mode instead of true browser fullscreen.
+    if (IS_APPLE_TOUCH_DEVICE) {
+      if (!state.focusGatePassed) {
+        state.focusModeActive = true;
+        state.focusModeEverEntered = true;
+        activateReportAfterFocus(true);
+        els.focusModeButton.textContent = "Focus Mode Active";
+        els.focusControlBadge.textContent = "ACTIVE";
+        els.focusControlBadge.className = "status-chip active";
+        els.monitoringBadge.textContent = "MONITORED";
+        els.monitoringBadge.className = "status-chip active";
+        els.focusControlMessage.textContent = "iPad Focus Mode is active. Assessment Monitoring remains active while you work.";
+        els.monitoringStatus.textContent = "iPad monitored mode is active. Genuine tab/app hiding will still be recorded.";
+      }
+      return;
+    }
+
     try {
       if (document.fullscreenElement) {
         await document.exitFullscreen();
@@ -1098,6 +1127,8 @@
   }
 
   function handleFullscreenChange() {
+    if (IS_APPLE_TOUCH_DEVICE) return;
+
     if (document.fullscreenElement) {
       state.focusModeActive = true;
       state.focusModeEverEntered = true;
@@ -1142,6 +1173,7 @@
   }
 
   async function requestWakeLock() {
+    if (IS_APPLE_TOUCH_DEVICE) return;
     if (!state.focusModeActive || document.hidden || !("wakeLock" in navigator)) return;
     try {
       if (state.wakeLock && !state.wakeLock.released) return;
@@ -1155,6 +1187,10 @@
   }
 
   async function releaseWakeLock() {
+    if (IS_APPLE_TOUCH_DEVICE) {
+      state.wakeLock = null;
+      return;
+    }
     try {
       if (state.wakeLock && !state.wakeLock.released) await state.wakeLock.release();
     } catch (_) {
