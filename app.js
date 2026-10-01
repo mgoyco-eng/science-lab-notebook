@@ -1727,8 +1727,69 @@
   }
 
   function addPdfTables(doc, tables, y, margin, usableWidth, pageHeight) {
+    const bottomMargin = 44;
+
+    // Estimate a table's rendered height before placing it. This lets a table
+    // stay together when it can fit on one PDF page, while still allowing a
+    // genuinely long table to continue onto following pages.
+    function estimateTableHeight(table, fontSize, cellPadding) {
+      const colCount = Math.max(1, table.headers.length);
+      const approximateColumnWidth = usableWidth / colCount;
+      const textWidth = Math.max(20, approximateColumnWidth - (cellPadding * 2));
+      const lineHeight = fontSize * 1.15;
+
+      const estimateRowHeight = (cells) => {
+        let maxLines = 1;
+        cells.forEach((cell) => {
+          const text = typeof cell === "object" && cell !== null
+            ? String(cell.content ?? " ")
+            : String(cell ?? " ");
+          const lines = doc.splitTextToSize(text || " ", textWidth);
+          maxLines = Math.max(maxLines, Math.max(1, lines.length));
+        });
+        return Math.max(fontSize + (cellPadding * 2), (maxLines * lineHeight) + (cellPadding * 2));
+      };
+
+      let height = 0;
+
+      if (table.groupedHeading) {
+        height += fontSize + (cellPadding * 2) + 2;
+      }
+
+      height += estimateRowHeight(table.headers.map((header) => header || " "));
+
+      table.rows.forEach((row) => {
+        height += estimateRowHeight(row.map((cell) => cell || " "));
+      });
+
+      // Small allowance for AutoTable borders/rounding.
+      return height + 6;
+    }
+
     tables.forEach((table) => {
-      y = ensurePdfSpace(doc, y, table.title.trim() ? 52 : 43, pageHeight, margin);
+      const colCount = table.headers.length;
+      const fontSize = 11;
+      const cellPadding = 3.2;
+      const titleHeight = table.title.trim() ? 21 : 0;
+      const estimatedTableHeight = estimateTableHeight(table, fontSize, cellPadding);
+      const fullTableHeight = titleHeight + estimatedTableHeight;
+      const freshPageCapacity = pageHeight - margin - bottomMargin;
+      const remainingCapacity = pageHeight - bottomMargin - y;
+
+      // OPTION 2:
+      // If the whole table can fit on a clean page but not in the space left
+      // on the current page, start it on a new page. If the table itself is
+      // taller than one page, let AutoTable split it normally.
+      const tableFitsOnOnePage = fullTableHeight <= freshPageCapacity;
+      if (tableFitsOnOnePage && fullTableHeight > remainingCapacity) {
+        doc.addPage();
+        y = margin;
+      } else {
+        // For genuinely long tables, avoid starting with only a tiny fragment
+        // at the bottom of a page.
+        y = ensurePdfSpace(doc, y, table.title.trim() ? 90 : 72, pageHeight, margin);
+      }
+
       if (table.title.trim()) {
         doc.setTextColor(...COLORS.ink);
         doc.setFont("helvetica", "bold");
@@ -1736,8 +1797,7 @@
         doc.text(table.title.trim(), margin, y);
         y += 7;
       }
-      const colCount = table.headers.length;
-      const fontSize = 11;
+
       const headRows = [];
       if (table.groupedHeading) {
         normalizeGroupedHeading(table);
@@ -1760,16 +1820,42 @@
         headRows.push(groupedRow);
       }
       headRows.push(table.headers.map((header) => header || " "));
+
       doc.autoTable({
         startY: y,
         theme: "grid",
-        margin: { left: margin, right: margin },
+        margin: { left: margin, right: margin, bottom: bottomMargin },
         head: headRows,
         body: table.rows.map((row) => row.map((cell) => cell || " ")),
-        styles: { font: "helvetica", fontSize, cellPadding: 3.2, lineColor: [135, 155, 175], lineWidth: 0.45, textColor: COLORS.ink, overflow: "linebreak", valign: "middle" },
-        headStyles: { fillColor: [234, 247, 250], textColor: COLORS.navy, fontStyle: "bold", halign: "center" },
-        tableWidth: usableWidth
+        styles: {
+          font: "helvetica",
+          fontSize,
+          cellPadding,
+          lineColor: [135, 155, 175],
+          lineWidth: 0.45,
+          textColor: COLORS.ink,
+          overflow: "linebreak",
+          valign: "middle"
+        },
+        headStyles: {
+          fillColor: [234, 247, 250],
+          textColor: COLORS.navy,
+          fontStyle: "bold",
+          halign: "center"
+        },
+        tableWidth: usableWidth,
+
+        // Keep a table together when possible. AutoTable will still split a
+        // table that is too tall for a single page.
+        pageBreak: tableFitsOnOnePage ? "avoid" : "auto",
+
+        // Never split a single data row between two pages.
+        rowPageBreak: "avoid",
+
+        // When a long table continues on another page, repeat its heading rows.
+        showHead: "everyPage"
       });
+
       y = doc.lastAutoTable.finalY + 13;
     });
     return y;
