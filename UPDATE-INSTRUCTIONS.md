@@ -1,42 +1,42 @@
-# Science Lab Notebook — Version 19
+# Science Lab Notebook — Version 20
 
-This is a richer full-Halloween redesign of the optional Halloween theme.
+This version redesigns the optional Halloween theme using the uploaded teal vintage Halloween poster as the primary visual reference.
 
-## Style direction
-- In-between brightness: no near-black interface, but no pastel palette
-- Parchment / aged-paper base
-- Burnt orange
-- Deep plum
-- Charcoal-purple
-- Muted moss green
-- Stronger borders and contrast
+## Visual direction
+- saturated teal / turquoise-green background
+- warm orange / yellow accents
+- parchment-colored content cards
+- dark navy / charcoal outlines
+- muted moss-green secondary accents
+- vintage poster feel rather than pastel or dark-mode styling
 
 ## Decorations
-The Halloween mode now uses many more seasonal decorations without placing them over writing fields:
+More Halloween imagery is distributed around the interface without covering writing fields:
 - bats
 - pumpkins
-- moons
 - spiderwebs
-- stars
+- black cat
+- potion / lab imagery
+- tombstone
+- witch broom
+- ghost
+- moon
 - decorative side rails on wide screens
-- themed header border
-- decorated report divider
-- web corners on major cards
-- seasonal accents at card bottoms
-- alternating orange/plum report-section treatments
 
-## Typography
-Halloween display headings use the `Creepster` web font.
-Student writing areas, instructions, labels, tables, and body text remain in normal readable fonts.
+The grim reaper is intentionally excluded.
 
-## Regular theme
-The regular theme is unchanged.
+## Halloween heading
+In Halloween mode only:
+- `SCIENCE` uses a quirky ornate Halloween display face inspired by the WITCH example.
+- `Lab Notebook` switches away from the normal image and uses a tall, hand-drawn lettering style inspired by the BOO! example.
+
+The regular theme and its normal Lab Notebook image remain unchanged.
 
 ## File to replace
 Only replace:
 - `styles.css`
 
 ## Suggested commit message
-`Expand full Halloween theme`
+`Redesign Halloween theme from teal poster reference`
 
-After GitHub Pages updates, hard-refresh the site.
+Hard-refresh the page after GitHub Pages republishes.
