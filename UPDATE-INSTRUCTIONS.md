@@ -1,22 +1,34 @@
-# Science Lab Notebook — Version 16 (PDF table page-break improvement)
+# Science Lab Notebook — Version 17 (Regular / Halloween Theme Toggle)
 
-## What changed
-PDF data tables now follow this rule:
+## New feature
+A theme toggle is now available in the header.
 
-- If a complete table can fit on one PDF page, it will be kept together.
-- If it does not fit in the remaining space on the current page, it starts on the next page.
-- If a table is genuinely taller than one page, it may continue onto the next page.
-- A single data row will not be split between two pages.
-- Column/group headings repeat automatically when a long table continues on another page.
-- A table title stays with the table when the table can fit on one page.
+### Regular theme
+The existing Science Lab Notebook appearance remains the default.
 
-## File to replace in GitHub
-Only replace:
+### Halloween theme
+The entire on-screen notebook changes:
+- dark Halloween page background
+- orange, purple, cream, and charcoal palette
+- themed header and controls
+- Halloween-styled cards and report sections
+- themed Assessment Monitoring and Report Outline
+- themed forms, tables, warnings, buttons, dialogs, and preview surroundings
+- subtle decorative moon/web effects
+
+The actual report content and downloaded PDF remain academically styled and are not Halloween-decorated.
+
+## Important behavior
+The theme selection is intentionally NOT saved. Refreshing the page returns to the regular theme, consistent with the notebook's non-saving design.
+
+## Files to upload/replace in GitHub
+Upload/replace all four:
+- `index.html`
+- `styles.css`
 - `app.js`
+- `lab-notebook-heading.png`
 
 ## Suggested commit message
-`Improve PDF table page breaks`
+`Add regular and Halloween theme toggle`
 
-After GitHub Pages republishes, create a test report with:
-1. a short table placed near the bottom of a page, and
-2. a long table with enough rows to require two pages.
+After GitHub Pages republishes, hard-refresh the page with Command + Shift + R.

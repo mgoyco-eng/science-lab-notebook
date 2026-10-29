@@ -1,5 +1,5 @@
-# Science Lab Notebook — Version 14
+# Science Lab Notebook — Version 17
 
-This version adds an iPad/iPadOS monitoring compatibility fix.
+Adds a full Regular / Halloween theme toggle while preserving the notebook workflow and PDF/report behavior.
 
-The page now avoids treating ordinary iPad touch interactions as loss of focus while still recording genuine page hiding through the browser visibility API.
+The Halloween theme is an interface-only visual mode. It does not alter student report content.

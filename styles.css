@@ -865,3 +865,525 @@ kbd {
   body { background: #fff; }
   .page-shell { display: none !important; }
 }
+
+
+/* =========================================================
+   THEME TOGGLE
+   ========================================================= */
+
+.theme-toggle-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0 0 12px auto;
+}
+
+.theme-toggle-label {
+  color: var(--muted);
+  font-family: "Oswald", "Arial Narrow", sans-serif;
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--line-dark);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--navy);
+  padding: 5px 10px 5px 6px;
+  font-family: "Oswald", "Arial Narrow", sans-serif;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  box-shadow: 0 3px 10px rgba(11, 43, 91, .06);
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease, color .18s ease;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 5px 14px rgba(11, 43, 91, .10);
+}
+
+.theme-toggle-track {
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  background: #dce7ee;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  transition: background .2s ease;
+}
+
+.theme-toggle-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: grid;
+  place-items: center;
+  font-size: .72rem;
+  line-height: 1;
+  box-shadow: 0 1px 4px rgba(11, 43, 91, .18);
+  transform: translateX(0);
+  transition: transform .2s ease;
+}
+
+.theme-toggle[aria-checked="true"] .theme-toggle-track {
+  background: #f08b28;
+}
+
+.theme-toggle[aria-checked="true"] .theme-toggle-thumb {
+  transform: translateX(18px);
+}
+
+
+/* =========================================================
+   FULL HALLOWEEN THEME
+   Applied only when body has .halloween-theme.
+   ========================================================= */
+
+body.halloween-theme {
+  --navy: #f4e9d8;
+  --teal: #f08b28;
+  --teal-dark: #ffc15f;
+  --teal-soft: #35213f;
+  --orange: #ff8a25;
+  --orange-soft: #472515;
+  --green-soft: #24351f;
+  --paper: #1b1722;
+  --line: #4b4055;
+  --line-dark: #665672;
+  --ink: #f5eee4;
+  --muted: #c7b8cc;
+  background:
+    radial-gradient(circle at 12% 6%, rgba(132, 74, 155, .24), transparent 24%),
+    radial-gradient(circle at 88% 8%, rgba(240, 139, 40, .18), transparent 19%),
+    radial-gradient(circle at 42% 92%, rgba(74, 113, 65, .12), transparent 28%),
+    linear-gradient(180deg, #0f0c14 0%, #17111c 48%, #0d0b11 100%);
+  color: #f5eee4;
+}
+
+body.halloween-theme::before,
+body.halloween-theme::after {
+  content: "";
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .22;
+}
+
+body.halloween-theme::before {
+  width: 360px;
+  height: 360px;
+  right: -110px;
+  top: -125px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255, 196, 91, .84) 0 31%, rgba(255, 157, 48, .34) 32% 42%, transparent 43%);
+  filter: blur(.1px);
+}
+
+body.halloween-theme::after {
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 130px;
+  background:
+    radial-gradient(ellipse at 8% 0%, transparent 0 36px, rgba(225, 214, 233, .09) 37px 39px, transparent 40px),
+    radial-gradient(ellipse at 24% 0%, transparent 0 30px, rgba(225, 214, 233, .08) 31px 33px, transparent 34px),
+    radial-gradient(ellipse at 76% 0%, transparent 0 34px, rgba(225, 214, 233, .08) 35px 37px, transparent 38px);
+}
+
+body.halloween-theme .page-shell {
+  position: relative;
+  z-index: 1;
+}
+
+body.halloween-theme .site-header {
+  padding-top: 16px;
+}
+
+body.halloween-theme .site-header::before {
+  content: "✦  HALLOWEEN LAB  ✦";
+  position: absolute;
+  left: 20px;
+  top: -7px;
+  color: #ffc15f;
+  font-family: "Oswald", "Arial Narrow", sans-serif;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .17em;
+  opacity: .82;
+}
+
+body.halloween-theme .title-science {
+  color: #f4e9d8;
+  text-shadow: 0 3px 0 rgba(112, 60, 133, .65);
+}
+
+body.halloween-theme .title-script-image {
+  filter: brightness(0) saturate(100%) invert(92%) sepia(14%) saturate(622%) hue-rotate(336deg) brightness(105%) contrast(92%)
+          drop-shadow(0 3px 0 rgba(115, 60, 137, .45));
+}
+
+body.halloween-theme .header-intro {
+  color: #f4e9d8;
+}
+
+body.halloween-theme .title-banner {
+  color: #1b101f;
+  background: linear-gradient(90deg, #f08b28, #ffc15f);
+  box-shadow: 0 0 0 1px rgba(255, 193, 95, .22), 0 8px 24px rgba(240, 139, 40, .13);
+}
+
+body.halloween-theme .site-subtitle {
+  color: #cbbbd0;
+}
+
+body.halloween-theme .theme-toggle-label {
+  color: #d7c6dc;
+}
+
+body.halloween-theme .theme-toggle {
+  background: #261c2e;
+  border-color: #6b5579;
+  color: #ffd393;
+  box-shadow: 0 5px 18px rgba(0,0,0,.24);
+}
+
+body.halloween-theme .theme-toggle-track {
+  background: #f08b28;
+}
+
+body.halloween-theme .theme-toggle-thumb {
+  background: #2a1c32;
+  color: #ffc15f;
+}
+
+body.halloween-theme .card,
+body.halloween-theme dialog,
+body.halloween-theme .preview-sheet {
+  background:
+    linear-gradient(180deg, rgba(43, 32, 51, .96), rgba(25, 21, 31, .98));
+  border-color: #554663;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .28);
+  color: #f5eee4;
+}
+
+body.halloween-theme .card {
+  position: relative;
+}
+
+body.halloween-theme .card::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 193, 95, .035);
+}
+
+body.halloween-theme .instruction-card {
+  border-top: 4px solid #f08b28;
+}
+
+body.halloween-theme h2,
+body.halloween-theme h3,
+body.halloween-theme h4,
+body.halloween-theme label,
+body.halloween-theme strong {
+  color: #f7ead9;
+}
+
+body.halloween-theme .kicker {
+  color: #ffc15f;
+}
+
+body.halloween-theme .instruction-list li::marker {
+  color: #f08b28;
+}
+
+body.halloween-theme .important-message {
+  background: linear-gradient(135deg, #3a2016, #241827);
+  border-color: #f08b28;
+}
+
+body.halloween-theme .important-icon {
+  background: #311a13;
+}
+
+body.halloween-theme .warning-triangle::before {
+  background: #ff9a38;
+}
+
+body.halloween-theme .warning-triangle::after {
+  background: #311a13;
+}
+
+body.halloween-theme .warning-mark {
+  color: #ff9a38;
+}
+
+body.halloween-theme .warning-strip,
+body.halloween-theme .warning-message,
+body.halloween-theme .preview-warning,
+body.halloween-theme .modal-callout {
+  background: #3b241c;
+  border-color: #81502b;
+  color: #ffd7a9;
+}
+
+body.halloween-theme .monitoring-card {
+  border-top-color: #9c68b3;
+  background:
+    linear-gradient(180deg, rgba(53, 34, 65, .98), rgba(28, 23, 34, .98));
+}
+
+body.halloween-theme .monitoring-status,
+body.halloween-theme .fine-print,
+body.halloween-theme .removed-box p,
+body.halloween-theme .monitor-stats span {
+  color: #c9bacf;
+}
+
+body.halloween-theme .monitor-stats div {
+  background: #211a28;
+  border-color: #554663;
+}
+
+body.halloween-theme .monitor-stats strong {
+  color: #ffc15f;
+}
+
+body.halloween-theme .outline-list li {
+  background: #211a28;
+  border-left-color: #f08b28;
+  color: #eadfed;
+}
+
+body.halloween-theme .outline-list .outline-number {
+  color: #ffc15f;
+}
+
+body.halloween-theme .restore-button {
+  background: #342240;
+  border-color: #76598a;
+  color: #e5c8ef;
+}
+
+body.halloween-theme .focus-control-card {
+  border-color: #f08b28;
+  background:
+    linear-gradient(135deg, rgba(61, 33, 20, .98), rgba(45, 29, 53, .98));
+}
+
+body.halloween-theme .report-section {
+  border-left: 4px solid #764f89;
+}
+
+body.halloween-theme .report-heading {
+  border-bottom-color: #4e405a;
+}
+
+body.halloween-theme .part-badge {
+  background: #f08b28;
+  color: #1d111f;
+  box-shadow: 0 3px 0 #9d5318;
+}
+
+body.halloween-theme input,
+body.halloween-theme textarea,
+body.halloween-theme select {
+  background: #151219;
+  border-color: #594a64;
+  color: #fff7ee;
+  caret-color: #ffc15f;
+}
+
+body.halloween-theme input::placeholder,
+body.halloween-theme textarea::placeholder {
+  color: #917f98;
+}
+
+body.halloween-theme input:focus,
+body.halloween-theme textarea:focus,
+body.halloween-theme select:focus {
+  border-color: #f08b28;
+  box-shadow: 0 0 0 3px rgba(240, 139, 40, .16);
+}
+
+body.halloween-theme input[readonly] {
+  background: #211b26;
+  color: #c7bacb;
+}
+
+body.halloween-theme .btn,
+body.halloween-theme button:not(.theme-toggle):not(.remove-part):not(.table-icon-button) {
+  border-color: #6b5579;
+}
+
+body.halloween-theme .btn-primary,
+body.halloween-theme .focus-button {
+  background: linear-gradient(180deg, #f59a3c, #e5781d);
+  border-color: #ffad55;
+  color: #221322;
+  box-shadow: 0 5px 0 #914613, 0 8px 18px rgba(0,0,0,.18);
+}
+
+body.halloween-theme .btn-primary:hover,
+body.halloween-theme .focus-button:hover {
+  background: linear-gradient(180deg, #ffab54, #ef8529);
+}
+
+body.halloween-theme .btn-secondary {
+  background: #34233f;
+  border-color: #76598a;
+  color: #ead9ef;
+}
+
+body.halloween-theme .remove-part {
+  color: #ffb568;
+  border-color: #835027;
+  background: #332016;
+}
+
+body.halloween-theme .remove-part:hover {
+  background: #472718;
+}
+
+body.halloween-theme .status-chip.neutral {
+  background: #28202f;
+  color: #cbbfd0;
+  border-color: #57485f;
+}
+
+body.halloween-theme .status-chip.warning {
+  background: #422717;
+  color: #ffbf75;
+  border-color: #845127;
+}
+
+body.halloween-theme .status-chip.active {
+  background: #2c3a25;
+  color: #cde9a8;
+  border-color: #586f49;
+}
+
+body.halloween-theme .status-chip.submitted {
+  background: #382547;
+  color: #e5c8ef;
+  border-color: #76598a;
+}
+
+body.halloween-theme .gate-notice {
+  background: #241b2b;
+  border-color: #5f4b6a;
+  color: #d8cadd;
+}
+
+body.halloween-theme .data-table-wrap,
+body.halloween-theme .table-card,
+body.halloween-theme .controlled-variable-row,
+body.halloween-theme .figure-card,
+body.halloween-theme .reference-row {
+  background: #19151e;
+  border-color: #51425b;
+}
+
+body.halloween-theme table {
+  color: #f5eee4;
+}
+
+body.halloween-theme th {
+  background: #35213f;
+  color: #ffd393;
+  border-color: #665174;
+}
+
+body.halloween-theme td {
+  background: #19151e;
+  border-color: #51425b;
+}
+
+body.halloween-theme .table-icon-button {
+  background: #2a202f;
+  border-color: #665174;
+  color: #e8d5ee;
+}
+
+body.halloween-theme .table-icon-button:hover {
+  background: #3a2942;
+}
+
+body.halloween-theme .subtle-panel,
+body.halloween-theme .calculation-box {
+  background: #211a28;
+  border-color: #554663;
+}
+
+body.halloween-theme dialog::backdrop {
+  background: rgba(8, 5, 10, .82);
+  backdrop-filter: blur(4px);
+}
+
+body.halloween-theme .preview-shell {
+  background: #100d13;
+}
+
+body.halloween-theme .preview-toolbar {
+  background: #211825;
+  border-color: #594963;
+}
+
+body.halloween-theme .preview-document {
+  background: #fffaf3;
+  color: #1f2937;
+}
+
+body.halloween-theme .preview-document h1,
+body.halloween-theme .preview-document h2,
+body.halloween-theme .preview-document h3,
+body.halloween-theme .preview-document strong {
+  color: #172a47;
+}
+
+/* Halloween decorative corner webs on major cards */
+body.halloween-theme .instruction-card::before,
+body.halloween-theme .monitoring-card::before,
+body.halloween-theme .focus-control-card::before {
+  content: "";
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  right: 8px;
+  top: 8px;
+  opacity: .13;
+  pointer-events: none;
+  background:
+    linear-gradient(45deg, transparent 48%, #f3e4f8 49% 51%, transparent 52%),
+    linear-gradient(67.5deg, transparent 48%, #f3e4f8 49% 51%, transparent 52%),
+    linear-gradient(22.5deg, transparent 48%, #f3e4f8 49% 51%, transparent 52%),
+    radial-gradient(circle at 100% 0%, transparent 0 16px, #f3e4f8 17px 18px, transparent 19px 27px, #f3e4f8 28px 29px, transparent 30px 39px, #f3e4f8 40px 41px, transparent 42px);
+  transform-origin: top right;
+}
+
+@media (max-width: 980px) {
+  .theme-toggle-wrap {
+    justify-content: flex-start;
+    margin-left: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle,
+  .theme-toggle-thumb {
+    transition: none;
+  }
+}

@@ -93,6 +93,8 @@
   };
 
   const els = {
+    themeToggle: $("themeToggle"),
+    themeToggleLabel: $("themeToggleLabel"),
     experimentTitle: $("experimentTitle"),
     teacher: $("teacher"),
     studentName: $("studentName"),
@@ -241,6 +243,10 @@
       renderReferences();
       markDirty();
     });
+
+    if (els.themeToggle) {
+      els.themeToggle.addEventListener("click", toggleTheme);
+    }
 
     els.focusModeButton.addEventListener("click", toggleFocusMode);
 
@@ -983,6 +989,23 @@
   function showBlockedMessage(message) {
     els.blockedMessage.textContent = message;
     if (!els.blockedDialog.open) els.blockedDialog.showModal();
+  }
+
+  function toggleTheme() {
+    const enabled = !document.body.classList.contains("halloween-theme");
+    document.body.classList.toggle("halloween-theme", enabled);
+
+    if (els.themeToggle) {
+      els.themeToggle.setAttribute("aria-checked", enabled ? "true" : "false");
+      const text = els.themeToggle.querySelector(".theme-toggle-text");
+      const thumb = els.themeToggle.querySelector(".theme-toggle-thumb");
+      if (text) text.textContent = enabled ? "Regular" : "Halloween";
+      if (thumb) thumb.textContent = enabled ? "🎃" : "☾";
+    }
+
+    if (els.themeToggleLabel) {
+      els.themeToggleLabel.textContent = enabled ? "Halloween theme" : "Regular theme";
+    }
   }
 
   function attachMonitoring() {
