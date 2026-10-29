@@ -1,34 +1,28 @@
-# Science Lab Notebook — Version 17 (Regular / Halloween Theme Toggle)
+# Science Lab Notebook — Version 18
 
-## New feature
-A theme toggle is now available in the header.
+This update changes ONLY the Halloween appearance.
 
-### Regular theme
-The existing Science Lab Notebook appearance remains the default.
+## Improvements
+- Much lighter, easier-to-read Halloween background
+- Cream and lavender cards instead of dark charcoal panels
+- Stronger contrast for text and form fields
+- More visible Halloween decorations across the page:
+  - bats
+  - pumpkins
+  - spiderweb corners
+  - moon
+  - stars
+  - Halloween divider above the report
+- More seasonal styling in the header, monitoring panel, Focus Mode card, and report sections
+- Regular theme remains unchanged
 
-### Halloween theme
-The entire on-screen notebook changes:
-- dark Halloween page background
-- orange, purple, cream, and charcoal palette
-- themed header and controls
-- Halloween-styled cards and report sections
-- themed Assessment Monitoring and Report Outline
-- themed forms, tables, warnings, buttons, dialogs, and preview surroundings
-- subtle decorative moon/web effects
-
-The actual report content and downloaded PDF remain academically styled and are not Halloween-decorated.
-
-## Important behavior
-The theme selection is intentionally NOT saved. Refreshing the page returns to the regular theme, consistent with the notebook's non-saving design.
-
-## Files to upload/replace in GitHub
-Upload/replace all four:
-- `index.html`
+## Files to replace
+Only replace:
 - `styles.css`
-- `app.js`
-- `lab-notebook-heading.png`
+
+Everything else from Version 17 can remain.
 
 ## Suggested commit message
-`Add regular and Halloween theme toggle`
+`Brighten and decorate Halloween theme`
 
-After GitHub Pages republishes, hard-refresh the page with Command + Shift + R.
+After GitHub Pages updates, hard-refresh with Command + Shift + R.
