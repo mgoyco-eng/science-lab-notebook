@@ -1,28 +1,42 @@
-# Science Lab Notebook — Version 18
+# Science Lab Notebook — Version 19
 
-This update changes ONLY the Halloween appearance.
+This is a richer full-Halloween redesign of the optional Halloween theme.
 
-## Improvements
-- Much lighter, easier-to-read Halloween background
-- Cream and lavender cards instead of dark charcoal panels
-- Stronger contrast for text and form fields
-- More visible Halloween decorations across the page:
-  - bats
-  - pumpkins
-  - spiderweb corners
-  - moon
-  - stars
-  - Halloween divider above the report
-- More seasonal styling in the header, monitoring panel, Focus Mode card, and report sections
-- Regular theme remains unchanged
+## Style direction
+- In-between brightness: no near-black interface, but no pastel palette
+- Parchment / aged-paper base
+- Burnt orange
+- Deep plum
+- Charcoal-purple
+- Muted moss green
+- Stronger borders and contrast
 
-## Files to replace
+## Decorations
+The Halloween mode now uses many more seasonal decorations without placing them over writing fields:
+- bats
+- pumpkins
+- moons
+- spiderwebs
+- stars
+- decorative side rails on wide screens
+- themed header border
+- decorated report divider
+- web corners on major cards
+- seasonal accents at card bottoms
+- alternating orange/plum report-section treatments
+
+## Typography
+Halloween display headings use the `Creepster` web font.
+Student writing areas, instructions, labels, tables, and body text remain in normal readable fonts.
+
+## Regular theme
+The regular theme is unchanged.
+
+## File to replace
 Only replace:
 - `styles.css`
 
-Everything else from Version 17 can remain.
-
 ## Suggested commit message
-`Brighten and decorate Halloween theme`
+`Expand full Halloween theme`
 
-After GitHub Pages updates, hard-refresh with Command + Shift + R.
+After GitHub Pages updates, hard-refresh the site.
