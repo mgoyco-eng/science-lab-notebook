@@ -250,13 +250,14 @@
             </div>
 
             <div class="upload-panel">
-              <div>
-                <h3>Optional handwritten calculation image</h3>
-                <p class="field-help">Upload one clear image if your sample calculation was completed by hand.</p>
+              <div class="subheading-row">
+                <div>
+                  <h3>Optional handwritten calculation images</h3>
+                  <p class="field-help">Upload clear images if your sample calculation was completed by hand. Add more than one image if needed.</p>
+                </div>
+                <button id="addCalculationImage" type="button" class="btn btn-small btn-secondary">+ Add calculation image</button>
               </div>
-              <input id="calculationImage" type="file" accept="image/png,image/jpeg,image/webp" />
-              <img id="calculationImagePreview" class="upload-preview" alt="Preview of handwritten sample calculation" hidden />
-              <button id="removeCalculationImage" type="button" class="btn btn-small btn-secondary" hidden>Remove image</button>
+              <div id="calculationImageEntries" class="figure-entries"></div>
               <p id="calculationImageStatus" class="fine-print" aria-live="polite"></p>
             </div>
 

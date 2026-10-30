@@ -1,42 +1,25 @@
-# Science Lab Notebook — Version 20
+# Science Lab Notebook — Version 21
 
-This version redesigns the optional Halloween theme using the uploaded teal vintage Halloween poster as the primary visual reference.
+This update changes the **Processed Data** section so students can upload **more than one handwritten calculation image**.
 
-## Visual direction
-- saturated teal / turquoise-green background
-- warm orange / yellow accents
-- parchment-colored content cards
-- dark navy / charcoal outlines
-- muted moss-green secondary accents
-- vintage poster feel rather than pastel or dark-mode styling
+## What changed
+Previously:
+- only one optional handwritten calculation image could be uploaded.
 
-## Decorations
-More Halloween imagery is distributed around the interface without covering writing fields:
-- bats
-- pumpkins
-- spiderwebs
-- black cat
-- potion / lab imagery
-- tombstone
-- witch broom
-- ghost
-- moon
-- decorative side rails on wide screens
+Now:
+- students can add up to **6 calculation images**
+- each image has its own card and preview
+- each image can be removed individually
+- all uploaded calculation images appear in:
+  - the report preview
+  - the downloaded PDF
 
-The grim reaper is intentionally excluded.
-
-## Halloween heading
-In Halloween mode only:
-- `SCIENCE` uses a quirky ornate Halloween display face inspired by the WITCH example.
-- `Lab Notebook` switches away from the normal image and uses a tall, hand-drawn lettering style inspired by the BOO! example.
-
-The regular theme and its normal Lab Notebook image remain unchanged.
-
-## File to replace
-Only replace:
-- `styles.css`
+## Files to replace in GitHub
+Replace these files:
+- `index.html`
+- `app.js`
 
 ## Suggested commit message
-`Redesign Halloween theme from teal poster reference`
+`Allow multiple processed-data calculation images`
 
-Hard-refresh the page after GitHub Pages republishes.
+After GitHub Pages republishes, hard-refresh the page.

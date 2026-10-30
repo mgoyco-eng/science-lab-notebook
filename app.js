@@ -87,7 +87,7 @@
       rawData: [makeTable()],
       processedData: [makeTable()]
     },
-    calculationImage: null,
+    calculationImages: [],
     figures: [],
     references: [{ text: "" }]
   };
@@ -119,10 +119,9 @@
     controlledVariablesEditor: $("controlledVariablesEditor"),
     rawDataEditor: $("rawDataEditor"),
     processedDataEditor: $("processedDataEditor"),
-    calculationImage: $("calculationImage"),
-    calculationImagePreview: $("calculationImagePreview"),
+    addCalculationImage: $("addCalculationImage"),
+    calculationImageEntries: $("calculationImageEntries"),
     calculationImageStatus: $("calculationImageStatus"),
-    removeCalculationImage: $("removeCalculationImage"),
     figureEntries: $("figureEntries"),
     referenceEntries: $("referenceEntries"),
     previewReport: $("previewReport"),
@@ -219,12 +218,10 @@
       });
     });
 
-    els.calculationImage.addEventListener("pointerdown", authorizeFilePicker);
-    els.calculationImage.addEventListener("change", handleCalculationImage);
-    els.removeCalculationImage.addEventListener("click", () => {
-      if (state.submitted) return;
-      state.calculationImage = null;
-      renderCalculationImage();
+    $("addCalculationImage").addEventListener("click", () => {
+      if (state.submitted || state.calculationImages.length >= 6) return;
+      state.calculationImages.push({ dataUrl: "", name: "" });
+      renderCalculationImages();
       markDirty();
     });
 
@@ -741,36 +738,79 @@
     state.authorizedUntil = Date.now() + 60000;
   }
 
-  async function handleCalculationImage(event) {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file || state.submitted) return;
-    els.calculationImageStatus.textContent = "Preparing image…";
-    try {
-      const dataUrl = await prepareImage(file);
-      state.calculationImage = { dataUrl, name: file.name };
-      renderCalculationImage();
-      markDirty();
-      els.calculationImageStatus.textContent = "Image added for this open session only.";
-    } catch (error) {
-      els.calculationImageStatus.textContent = error.message || "The image could not be opened.";
-    } finally {
-      setTimeout(() => { state.authorizedUntil = 0; }, 750);
-    }
-  }
+  function renderCalculationImages() {
+    els.calculationImageEntries.replaceChildren();
 
-  function renderCalculationImage() {
-    if (state.calculationImage?.dataUrl) {
-      els.calculationImagePreview.src = state.calculationImage.dataUrl;
-      els.calculationImagePreview.hidden = false;
-      els.removeCalculationImage.hidden = false;
-      els.removeCalculationImage.disabled = state.submitted;
+    const imageCount = state.calculationImages.filter((item) => item.dataUrl).length;
+    if (imageCount) {
+      els.calculationImageStatus.textContent = `${imageCount} calculation image${imageCount === 1 ? "" : "s"} added for this open session only.`;
     } else {
-      els.calculationImagePreview.removeAttribute("src");
-      els.calculationImagePreview.hidden = true;
-      els.removeCalculationImage.hidden = true;
-      els.calculationImageStatus.textContent = "";
+      els.calculationImageStatus.textContent = "No calculation images added yet. You may add up to 6.";
     }
+
+    if (els.addCalculationImage) {
+      els.addCalculationImage.disabled = state.submitted || state.calculationImages.length >= 6;
+    }
+
+    state.calculationImages.forEach((entry, index) => {
+      const card = document.createElement("div");
+      card.className = "figure-card";
+
+      const head = document.createElement("div");
+      head.className = "figure-card-head";
+
+      const heading = document.createElement("h4");
+      heading.textContent = `Calculation Image ${index + 1}`;
+
+      const remove = document.createElement("button");
+      remove.type = "button";
+      remove.className = "icon-button";
+      remove.textContent = "×";
+      remove.title = `Remove Calculation Image ${index + 1}`;
+      remove.disabled = state.submitted;
+      remove.addEventListener("click", () => {
+        state.calculationImages.splice(index, 1);
+        renderCalculationImages();
+        markDirty();
+      });
+
+      head.append(heading, remove);
+
+      const file = document.createElement("input");
+      file.type = "file";
+      file.accept = "image/png,image/jpeg,image/webp";
+      file.disabled = state.submitted;
+      file.addEventListener("pointerdown", authorizeFilePicker);
+      file.addEventListener("change", async () => {
+        const selected = file.files?.[0];
+        file.value = "";
+        if (!selected || state.submitted) return;
+        els.calculationImageStatus.textContent = `Preparing image ${index + 1}…`;
+        try {
+          entry.dataUrl = await prepareImage(selected);
+          entry.name = selected.name;
+          renderCalculationImages();
+          markDirty();
+          els.calculationImageStatus.textContent = `Calculation image ${index + 1} added for this open session only.`;
+        } catch (error) {
+          els.calculationImageStatus.textContent = error.message || "The image could not be opened.";
+        } finally {
+          setTimeout(() => { state.authorizedUntil = 0; }, 750);
+        }
+      });
+
+      card.append(head, file);
+
+      if (entry.dataUrl) {
+        const img = document.createElement("img");
+        img.src = entry.dataUrl;
+        img.alt = entry.name ? `${entry.name} preview` : `Calculation Image ${index + 1} preview`;
+        img.className = "figure-preview";
+        card.append(img);
+      }
+
+      els.calculationImageEntries.append(card);
+    });
   }
 
   function renderFigures() {
@@ -1345,13 +1385,19 @@
     if (key === "processedData") {
       appendPreviewLabeledText(section, "Description of Calculation", $("calculationDescription").value);
       appendPreviewLabeledText(section, "Sample Calculation", $("sampleCalculation").value);
-      if (state.calculationImage?.dataUrl) {
+      const calculationImages = state.calculationImages.filter((item) => item.dataUrl);
+      calculationImages.forEach((item, index) => {
+        const imageTitle = document.createElement("p");
+        imageTitle.className = "preview-table-title";
+        imageTitle.textContent = `Calculation Image ${index + 1}`;
+        section.append(imageTitle);
+
         const img = document.createElement("img");
         img.className = "preview-image";
-        img.src = state.calculationImage.dataUrl;
-        img.alt = "Handwritten sample calculation";
+        img.src = item.dataUrl;
+        img.alt = item.name || `Handwritten sample calculation ${index + 1}`;
         section.append(img);
-      }
+      });
       appendPreviewTables(section, state.tables.processedData);
       state.figures.forEach((figure, index) => {
         if (!figure.dataUrl && !figure.title.trim() && !figure.description.trim()) return;
@@ -1696,9 +1742,11 @@
       y += 7;
       y = addPdfSubheading(doc, "Sample Calculation", y, margin);
       y = addPdfParagraph(doc, $("sampleCalculation").value || "No response entered.", y, margin, usableWidth, pageHeight);
-      if (state.calculationImage?.dataUrl) {
+      const calculationImages = state.calculationImages.filter((item) => item.dataUrl);
+      for (let i = 0; i < calculationImages.length; i += 1) {
         y += 7;
-        y = addPdfImage(doc, state.calculationImage.dataUrl, y, margin, usableWidth, pageHeight, "Handwritten sample calculation");
+        y = addPdfSubheading(doc, `Calculation Image ${i + 1}`, y, margin);
+        y = addPdfImage(doc, calculationImages[i].dataUrl, y, margin, usableWidth, pageHeight, calculationImages[i].name || `Handwritten sample calculation ${i + 1}`);
       }
       y += 8;
       y = await addPdfTables(doc, state.tables.processedData, y, margin, usableWidth, pageHeight);
@@ -1973,7 +2021,7 @@
     renderControlledVariables();
     renderTableEditor("rawData");
     renderTableEditor("processedData");
-    renderCalculationImage();
+    renderCalculationImages();
     renderFigures();
     renderReferences();
   }
