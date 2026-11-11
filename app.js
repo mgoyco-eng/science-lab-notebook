@@ -742,11 +742,9 @@
     els.calculationImageEntries.replaceChildren();
 
     const imageCount = state.calculationImages.filter((item) => item.dataUrl).length;
-    if (imageCount) {
-      els.calculationImageStatus.textContent = `${imageCount} calculation image${imageCount === 1 ? "" : "s"} added for this open session only.`;
-    } else {
-      els.calculationImageStatus.textContent = "No calculation images added yet. You may add up to 6.";
-    }
+    els.calculationImageStatus.textContent = imageCount
+      ? `${imageCount} calculation image${imageCount === 1 ? "" : "s"} added for this open session only.`
+      : "No calculation images added yet. You may add up to 6.";
 
     if (els.addCalculationImage) {
       els.addCalculationImage.disabled = state.submitted || state.calculationImages.length >= 6;
@@ -791,7 +789,6 @@
           entry.name = selected.name;
           renderCalculationImages();
           markDirty();
-          els.calculationImageStatus.textContent = `Calculation image ${index + 1} added for this open session only.`;
         } catch (error) {
           els.calculationImageStatus.textContent = error.message || "The image could not be opened.";
         } finally {
@@ -1818,7 +1815,14 @@
       const colCount = table.headers.length;
       const fontSize = 11;
       const cellPadding = 3.2;
-      const titleHeight = table.title.trim() ? 21 : 0;
+      let titleHeight = 0;
+      let wrappedTitleLines = [];
+      if (table.title.trim()) {
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(14);
+        wrappedTitleLines = doc.splitTextToSize(table.title.trim(), usableWidth - 24);
+        titleHeight = wrappedTitleLines.length * 16 + 10;
+      }
       const estimatedTableHeight = estimateTableHeight(table, fontSize, cellPadding);
       const fullTableHeight = titleHeight + estimatedTableHeight;
       const freshPageCapacity = pageHeight - margin - bottomMargin;
@@ -1835,15 +1839,23 @@
       } else {
         // For genuinely long tables, avoid starting with only a tiny fragment
         // at the bottom of a page.
-        y = ensurePdfSpace(doc, y, table.title.trim() ? 90 : 72, pageHeight, margin);
+        y = ensurePdfSpace(doc, y, table.title.trim() ? Math.max(90, titleHeight + 72) : 72, pageHeight, margin);
       }
 
       if (table.title.trim()) {
         doc.setTextColor(...COLORS.ink);
         doc.setFont("helvetica", "bold");
         doc.setFontSize(14);
-        doc.text(table.title.trim(), margin, y);
-        y += 7;
+
+        if (!wrappedTitleLines.length) {
+          wrappedTitleLines = doc.splitTextToSize(table.title.trim(), usableWidth - 24);
+        }
+
+        doc.text(wrappedTitleLines, margin + usableWidth / 2, y, {
+          align: "center"
+        });
+
+        y += wrappedTitleLines.length * 16 + 10;
       }
 
       const headRows = [];
